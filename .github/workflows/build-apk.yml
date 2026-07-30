@@ -72,6 +72,9 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
       - name: Write version info
         if: github.event_name == 'workflow_dispatch'
         run: |
