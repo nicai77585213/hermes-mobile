@@ -149,14 +149,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: hermes-mobile-apk-${{ github.sha }}
+          path: apk-artifact
+
       - name: Report APK sizes
         run: |
+          # Artifact is a zip of the APK; unzip then report
+          cd apk-artifact
+          unzip -o *.zip 2>/dev/null || true
           echo "## APK Sizes" >> $GITHUB_STEP_SUMMARY
           echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
           echo "|------|------|" >> $GITHUB_STEP_SUMMARY
           find . -name "*.apk" -exec ls -lh {} \; | \
             awk '{print "|", $9, "|", $5, "|"}' >> $GITHUB_STEP_SUMMARY
-          ls -lh *.apk 2>/dev/null
+          find . -name "*.apk" -exec ls -lh {} \;
 
   lint:
     runs-on: ubuntu-latest
