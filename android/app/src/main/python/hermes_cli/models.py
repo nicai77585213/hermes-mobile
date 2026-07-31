@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, NamedTuple, Optional
 
 from hermes_cli import __version__ as _HERMES_VERSION
+from hermes_cli import mobile_secrets  # noqa: E402
 
 # Identify ourselves so endpoints fronted by Cloudflare's Browser Integrity
 # Check (error 1010) don't reject the default ``Python-urllib/*`` signature.
@@ -2341,7 +2342,7 @@ def provider_model_ids(provider: Optional[str], *, force_refresh: bool = False) 
         cfg_provider = normalize_provider(str(model_cfg.get("provider", "") or ""))
         if cfg_provider == "anthropic":
             cfg_base_url = str(model_cfg.get("base_url", "") or "").strip()
-            cfg_api_key = str(model_cfg.get("api_key", "") or "").strip()
+            cfg_api_key = mobile_secrets.resolve_api_key(model_cfg.get("api_key", ""))
         else:
             cfg_base_url = ""
             cfg_api_key = ""
@@ -2423,7 +2424,7 @@ def provider_model_ids(provider: Optional[str], *, force_refresh: bool = False) 
             model_cfg = _get_model_config_dict()
             # Try common API key env vars for custom endpoints
             api_key = (
-                str(model_cfg.get("api_key", "") or "").strip()
+                mobile_secrets.resolve_api_key(model_cfg.get("api_key", ""))
                 or os.getenv("CUSTOM_API_KEY", "")
                 or os.getenv("OPENAI_API_KEY", "")
                 or os.getenv("OPENROUTER_API_KEY", "")

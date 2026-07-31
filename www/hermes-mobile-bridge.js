@@ -1227,8 +1227,22 @@
         api_mode: "chat_completions",
         confirm_expensive_model: true
       };
-      if (String(apiKey || "").trim()) {
-        payload.api_key = String(apiKey || "").trim();
+      var keyValue = String(apiKey || "").trim();
+      // 移动端密钥安全：明文密钥不进配置、不落盘。
+      // 新输入 → 加密存入 Android Keystore；已有密钥且未改动 → 保留标记；
+      // 两者都无 → 显式无密钥。
+      if (window.HermesAndroid && typeof window.HermesAndroid.secureStoreSecret === "function") {
+        var hasStoredKey = Boolean(window.HermesAndroid.secureHasSecret("hermes_mobile_api_key"));
+        if (keyValue) {
+          window.HermesAndroid.secureStoreSecret("hermes_mobile_api_key", keyValue);
+          payload.has_api_key = true;
+        } else if (hasStoredKey) {
+          payload.has_api_key = true;
+        } else {
+          payload.has_api_key = false;
+        }
+      } else if (keyValue) {
+        payload.api_key = keyValue;
       }
       return requestDashboardJson("POST", "/api/model/set", payload, true);
     }

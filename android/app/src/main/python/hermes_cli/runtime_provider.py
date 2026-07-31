@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 from hermes_cli import auth as auth_mod
+from hermes_cli import mobile_secrets  # noqa: E402
 from agent.credential_pool import CredentialPool, PooledCredential, get_custom_provider_pool_key, load_pool
 from agent.secret_scope import get_secret as _get_secret
 from hermes_cli.auth import (
@@ -1883,9 +1884,10 @@ def resolve_runtime_provider(
                     if token:
                         break
             # Next: an inline api_key on the model config (useful in multi-profile
-            # setups that want to avoid env-var juggling).
+            # setups that want to avoid env-var juggling). Mobile: __keystore__
+            # placeholder resolves to the Keystore-injected env key.
             if not token:
-                token = str(model_cfg.get("api_key") or "").strip()
+                token = mobile_secrets.resolve_api_key(model_cfg.get("api_key"))
             # Finally fall back to the historical fixed names.
             if not token:
                 token = (

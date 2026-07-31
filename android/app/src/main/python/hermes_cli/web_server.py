@@ -51,6 +51,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from hermes_cli import __version__, __release_date__
+from hermes_cli import mobile_secrets  # noqa: E402
 from hermes_cli.config import (
     cfg_get,
     DEFAULT_CONFIG,
@@ -932,6 +933,10 @@ class ModelAssignment(BaseModel):
     # ``hermes model`` custom flow collects. Honored only on the main slot for
     # custom/local providers.
     api_key: str = ""
+    # Mobile: true means the API key lives in Android Keystore (not in config).
+    # The desktop/CLI flow keeps sending plaintext api_key; the mobile client
+    # sends has_api_key and omits the plaintext.
+    has_api_key: bool = False
     # Optional transport mode for custom/local OpenAI-compatible endpoints.
     # Without this, POST /api/model/set can strip a saved chat_completions
     # mode and let GPT-5-family custom models be auto-routed incorrectly.
@@ -4132,6 +4137,11 @@ def get_model_info(profile: Optional[str] = None):
             base_url = model_cfg.get("base_url", "")
             api_mode = model_cfg.get("api_mode", "")
             has_api_key = bool(str(model_cfg.get("api_key", "") or "").strip())
+            # 移动端：占位符或 Keystore 注入的环境变量也算有密钥
+            if not has_api_key:
+                has_api_key = mobile_secrets.is_placeholder(model_cfg.get("api_key", ""))
+            if not has_api_key:
+                has_api_key = mobile_secrets.has_secure_key()
             config_ctx = model_cfg.get("context_length")
         else:
             model_name = str(model_cfg) if model_cfg else ""
@@ -4472,6 +4482,13 @@ async def set_model_assignment(body: ModelAssignment, profile: Optional[str] = N
     task = (body.task or "").strip().lower()
     base_url = (body.base_url or "").strip()
     api_key = (body.api_key or "").strip()
+    # 移动端密钥安全：明文密钥不再写入配置文件，只保留占位符，
+    # 运行时由 Keystore 解密后经 HERMES_MOBILE_API_KEY 环境变量注入。
+    if api_key and not mobile_secrets.is_placeholder(api_key):
+        api_key = mobile_secrets.KEYSTORE_PLACEHOLDER
+    # 新移动端客户端：密钥存于 Keystore，payload 只带 has_api_key 标记
+    if body.has_api_key and not api_key:
+        api_key = mobile_secrets.KEYSTORE_PLACEHOLDER
     api_mode = (body.api_mode or "").strip()
 
     if provider.lower() in {"custom", "local"}:

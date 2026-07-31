@@ -24,6 +24,9 @@ _server_port = 9129
 _last_error = ""
 _started_at = 0.0
 _files_dir = ""
+# 幂等初始化缓存：避免重复 import 大模块，加速二次 initialize/start
+_initialized = False
+_init_result = ""
 
 
 def _json(data: dict[str, Any]) -> str:
@@ -95,22 +98,28 @@ def _prepare_node_environment(root: Path) -> None:
 
 def initialize(files_dir: str, port: int = 9129) -> str:
     """Prepare local directories and verify the embedded source imports."""
-    global _server_port, _last_error
+    global _server_port, _last_error, _initialized, _init_result
     with _lock:
         _server_port = int(port or _server_port)
+        # 幂等缓存：同一 files_dir 已成功初始化过 → 直接返回，跳过重复导入
+        resolved = str(Path(files_dir).resolve())
+        if _initialized and _files_dir == resolved:
+            return _init_result
         env = _prepare_environment(files_dir)
         try:
             import hermes_cli  # noqa: F401
             import run_agent  # noqa: F401
             import gateway  # noqa: F401
             _last_error = ""
-            return _json({
+            _init_result = _json({
                 "ok": True,
                 "available": True,
                 "port": _server_port,
                 "running": is_running(),
                 "env": env,
             })
+            _initialized = True
+            return _init_result
         except Exception as exc:
             _last_error = "".join(traceback.format_exception_only(type(exc), exc)).strip()
             return _json({

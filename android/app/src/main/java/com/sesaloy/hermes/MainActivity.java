@@ -82,6 +82,7 @@ public class MainActivity extends BridgeActivity {
     private boolean textToSpeechReady = false;
     private boolean hermesNodeRuntimeReady = false;
     private AndroidAdbManager androidAdbManager;
+    private SecretStore secretStore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
         activeInstance = this;
         androidAdbManager = new AndroidAdbManager(this);
+        secretStore = new SecretStore(this);
         // 启动前台常驻服务，避免系统在后台回收 Hermes runtime
         startHermesForegroundService();
         configureWebViewForPhoneScreen();
@@ -149,6 +151,11 @@ public class MainActivity extends BridgeActivity {
     private void warmEmbeddedHermesRuntime() {
         new Thread(() -> {
             try {
+                // 从 Keystore 解密 API 密钥注入环境变量，供后端运行时读取（磁盘不明文落盘）
+                String apiKey = secretStore == null ? null : secretStore.load(SecretKeys.API_KEY);
+                if (apiKey != null && !apiKey.isEmpty()) {
+                    Os.setenv("HERMES_MOBILE_API_KEY", apiKey, true);
+                }
                 String result = callEmbeddedBackend("initialize", getFilesDir().getAbsolutePath(), EMBEDDED_AGENT_PORT);
                 Log.i(TAG, "Embedded Hermes initialize: " + result);
             } catch (Exception e) {
@@ -779,6 +786,32 @@ public class MainActivity extends BridgeActivity {
         @JavascriptInterface
         public boolean openDeveloperOptions() {
             return openAndroidSettings(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
+        }
+
+        @JavascriptInterface
+        public boolean secureStoreSecret(String key, String value) {
+            return secretStore != null && secretStore.store(key, value);
+        }
+
+        @JavascriptInterface
+        public String secureLoadSecret(String key) {
+            if (secretStore == null) {
+                return "";
+            }
+            String value = secretStore.load(key);
+            return value == null ? "" : value;
+        }
+
+        @JavascriptInterface
+        public boolean secureHasSecret(String key) {
+            return secretStore != null && secretStore.has(key);
+        }
+
+        @JavascriptInterface
+        public void secureDeleteSecret(String key) {
+            if (secretStore != null) {
+                secretStore.delete(key);
+            }
         }
 
         @JavascriptInterface
