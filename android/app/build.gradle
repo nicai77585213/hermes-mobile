@@ -28,10 +28,26 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        // 仅在提供签名环境变量时启用（CI 从 secrets 注入）
+        release {
+            def keystoreB64 = System.getenv('KEYSTORE_BASE64')
+            if (keystoreB64 != null && !keystoreB64.isEmpty()) {
+                def keystoreFile = file("${buildDir}/release-keystore.jks")
+                storeFile = keystoreFile
+                storePassword = System.getenv('KEYSTORE_PASSWORD')
+                keyAlias = System.getenv('KEY_ALIAS')
+                keyPassword = System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            def hasKeystore = System.getenv('KEYSTORE_BASE64') != null && !System.getenv('KEYSTORE_BASE64').isEmpty()
+            signingConfig hasKeystore ? signingConfigs.release : null
         }
     }
     packagingOptions {

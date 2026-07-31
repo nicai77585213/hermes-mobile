@@ -1,21 +1,32 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Hermes Mobile ProGuard/R8 规则
+# 关键：Python-Java 桥、WebView JS 接口、反射调用的类必须保留
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Chaquopy: Python 通过 JNI 反射调用 Java 类，禁止混淆/裁剪
+-keep class com.chaquo.python.** { *; }
+-keep class com.chaquo.python.android.** { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Capacitor 桥
+-keep class com.getcapacitor.** { *; }
+-keep class com.getcapacitor.plugin.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# 本项目入口与内部桥（Python 会反射调用）
+-keep class com.sesaloy.hermes.** { *; }
+
+# WebView JavaScript 接口：JS 端通过名字调用，方法必须保留原名
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+-keepattributes JavascriptInterface
+-keepattributes *Annotation*
+
+# 反射/序列化保留
+-keepattributes Signature, InnerClasses, EnclosingMethod
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+
+# Chaquopy 动态导入的 Python 模块引用
+-dontwarn com.chaquo.python.**
+-dontwarn com.getcapacitor.**
+-dontwarn org.json.**
+
+# 保留行号便于排障（release 版）
+-keepattributes SourceFile, LineNumberTable
