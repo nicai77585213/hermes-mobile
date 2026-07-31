@@ -4,7 +4,7 @@ description: Sanitized Hermes Android APK project handoff memory for the public 
 metadata:
   node_type: memory
   type: project
-updated_at: 2026-07-14 09:55:00 +08:00
+updated_at: 2026-07-31 11:30:00 +08:00
 privacy: Public copy; local paths, device identifiers, network addresses, session IDs, delivery channels, and credentials are intentionally omitted.
 ---
 
@@ -31,8 +31,25 @@ privacy: Public copy; local paths, device identifiers, network addresses, sessio
 ### Android 版本
 
 - 当前 App 版本为 `versionCode 2` / `versionName 1.1`。
-- 当前构建为 `arm64-v8a` debug APK，尚未完成正式签名和商店发布验收。
-- `assembleDebug` 已成功，APK 元数据已通过 Android build-tools 校验。
+- 当前构建为 `arm64-v8a` **release 正式签名版**（R8 混淆 + 资源压缩，`app-release.apk` 约 82MB）。
+- Release 签名密钥已生成并存入 GitHub Actions Secrets（`KEYSTORE_BASE64` / `KEYSTORE_PASSWORD` / `KEY_ALIAS` / `KEY_PASSWORD`），本地构建无密钥时回退为未签名 release。
+- `assembleDebug` 与 `assembleRelease` 均已成功，APK 元数据通过 Android build-tools 校验。
+
+### 后台常驻（Foreground Service）
+
+- 新增 `HermesForegroundService`：常驻通知"Hermes 正在运行" + 受控 partial WakeLock，`START_STICKY` 防杀。
+- `MainActivity.onCreate` 启动服务（Android O+ 用 `startForegroundService`），Android 13+ 自动请求 `POST_NOTIFICATIONS` 权限。
+- Manifest 新增 `FOREGROUND_SERVICE`、`FOREGROUND_SERVICE_DATA_SYNC`、`POST_NOTIFICATIONS`、`WAKE_LOCK` 权限与 `dataSync` 类型 service 声明。
+- 后台常驻已编译通过并在 CI 全量构建中验证，**真机效果仍待验证**。
+
+### CI/CD 与自动发布
+
+- 新增 `.github/workflows/build-apk.yml`：push/PR/tag/手动 dispatch 触发。
+- 构建环境：JDK 21 + Android SDK 35 + NDK 27 + Python 3.11 + Node.js 22（GitHub 托管，不依赖本地网络）。
+- `buildPython` 已改为读取 `HERMES_PYTHON` 环境变量，CI 传 `python3`，本地回退硬编码路径。
+- 关键前置步骤 `npx cap sync android`（生成 `capacitor-cordova-android-plugins`，缺它会报 `cordova.variables.gradle does not exist`）。
+- 打 `v*` tag 自动：签名 release 构建 → APK 校验 → **发布到 GitHub Releases**（workflow 需 `permissions: contents: write`）。
+- 已知流程验证：`v1.1` tag 已成功发布 `app-release.apk`（81.6MB）。
 
 ### 已跑通的底层闭环
 
@@ -71,21 +88,23 @@ privacy: Public copy; local paths, device identifiers, network addresses, sessio
 
 ## 当前阻塞
 
-- App 当前没有 Foreground Service、`FOREGROUND_SERVICE` 权限或受控 WakeLock。短时切后台时后端任务曾继续运行，但 WebView JavaScript、流式事件和渲染可能被冻结；长时后台、锁屏、省电和系统回收下不保证存活。
-- 推荐的后台架构是：由带常驻通知的 Foreground Service 承载 Hermes runtime；仅在活动任务期间持有受控 partial WakeLock；WebView 回前台后按持久 session key 补拉消息和任务状态。该架构属于产品级大改，实施前需确认通知与电量取舍。
+- 后台常驻前台服务已实现并通过编译，但**尚未在真机验证**：长时后台、锁屏、省电模式下的存活表现未知；WebView 回前台后的消息/任务状态补拉机制尚未实现（当前依赖 WebView 存活时的持久 session key）。
+- `HermesForegroundService` 当前在 App 启动即常驻，通知与电量取舍（是否允许用户关闭、是否仅任务期持锁）未做产品化设置。
 - Chaquopy SQLite 缄少 FTS5，全文会话搜索当前禁用。
 - 部分插件资源目录会产生缺少 `__init__.py` 的警告，需要区分资源目录提示和真实缺包。
 - 内置 ADB 二进制目前来自 LADB 项目并已附带许可说明；该来源不适用于非官方 Google Play 发布，上架前必须替换为独立构建的 AOSP adb。
-- 当前仍是 arm64-only debug 构建，尚未完成 release 签名、升级迁移、全新安装和覆盖升级验收。
+- 本仓库为 fork（nicai77585213/hermes-mobile），CI、后台常驻、签名等改动尚未合入上游 `sesaloy/hermes-mobile`（PR #9 待合并）。
 
 ## 下一步
 
-1. 继续回归移动能力页的真实字段、刷新、错误提示和返回行为。
-2. 补齐沙箱、子代理和命令面板的数据页，再按低风险到高风险增加操作闭环。
-3. 所有删除、重置、卸载、销毁操作必须包含确认、结果反馈和失败恢复。
-4. 若确认后台方案，增加 Foreground Service、任务期 WakeLock 和前台恢复补拉机制。
-5. 继续覆盖不同 Android 厂商的无线调试设置跳转，并完成 App 内 ADB 的真实配对/连接闭环。
-6. 最后处理 SQLite FTS5、插件警告、TTS/语音遗留、release 签名和发布工程。
+1. **真机验证后台常驻**：安装 `app-release.apk`（Releases v1.1），测试切后台/锁屏/省电下 Hermes runtime 存活与通知常驻。
+2. 将 fork 上的 CI、后台常驻、签名等改动以 PR 合入上游 `sesaloy/hermes-mobile`（PR #9 基础上补充）。
+3. 继续回归移动能力页的真实字段、刷新、错误提示和返回行为。
+4. 补齐沙箱、子代理和命令面板的数据页，再按低风险到高风险增加操作闭环。
+5. 所有删除、重置、卸载、销毁操作必须包含确认、结果反馈和失败恢复。
+6. 后台产品化：常驻通知开关、WakeLock 仅在活动任务期持有、WebView 回前台补拉消息与任务状态。
+7. 继续覆盖不同 Android 厂商的无线调试设置跳转，并完成 App 内 ADB 的真实配对/连接闭环。
+8. 最后处理 SQLite FTS5、插件警告、TTS/语音遗留、全新安装与覆盖升级验收。
 
 ## 关键工程路径
 
@@ -125,16 +144,20 @@ privacy: Public copy; local paths, device identifiers, network addresses, sessio
 ### 安全与产品文案
 
 - 不得把 API 密钥、令牌或签名材料写入源码、APK、日志或项目记忆。
+- Release 签名密钥只存于 GitHub Actions Secrets 与本机 keystore 文件，密钥与密码一律不入库、不提交。
 - 面向普通用户的界面避免出现 Termux、部署、runtime、filesDir、dataDir、nativeLibraryDir、包名和调试路径等工程术语。
-- 使用普通用户文案，例如“正在准备”“服务已启动”“需要完成模型设置”“连接失败，请检查 API 端点或密钥”。
+- 使用普通用户文案，例如"正在准备""服务已启动""需要完成模型设置""连接失败，请检查 API 端点或密钥"。
 
 ## 构建
 
 ```powershell
+# debug
 ./android/gradlew.bat -p ./android assembleDebug --console=plain
+# release（无签名环境变量时产出未签名 release）
+./android/gradlew.bat -p ./android assembleRelease --console=plain
 ```
 
-构建环境需要可用的 Android SDK、JDK、Python/Chaquopy 依赖以及项目要求的 ARM64 原生资源。
+构建环境需要可用的 Android SDK、JDK、Python/Chaquopy 依赖以及项目要求的 ARM64 原生资源。CI 构建见 `.github/workflows/build-apk.yml`（GitHub 托管环境，打 `v*` tag 自动发布 Releases）。
 
 ## 公开仓库隐私规则
 
