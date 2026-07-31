@@ -1,1 +1,10 @@
 node_modules/
+.venv/
+__pycache__/
+*.pyc
+*.keystore
+*.jks
+build/
+.gradle/
+local.properties
+*.log

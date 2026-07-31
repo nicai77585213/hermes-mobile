@@ -1,0 +1,17 @@
+{
+  "name": "hermes-app",
+  "version": "0.1.0",
+  "description": "Hermes Agent Android wrapper - loads local Hermes dashboard",
+  "private": true,
+  "scripts": {
+    "build": "echo 'static site, no build needed' && exit 0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.2.0",
+    "@capacitor/core": "^8.4.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.4.1",
+    "typescript": "^6.0.3"
+  }
+}
