@@ -89,10 +89,35 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
         activeInstance = this;
         androidAdbManager = new AndroidAdbManager(this);
+        // 启动前台常驻服务，避免系统在后台回收 Hermes runtime
+        startHermesForegroundService();
         configureWebViewForPhoneScreen();
         installHermesWebViewClient();
         installBackNavigationHandler();
         warmEmbeddedHermesRuntime();
+    }
+
+    private void startHermesForegroundService() {
+        try {
+            Intent serviceIntent = new Intent(this, HermesForegroundService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+            requestNotificationPermissionIfNeeded();
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to start foreground service", e);
+        }
+    }
+
+    private void requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 2001);
+            }
+        }
     }
 
     public static boolean speakTextFromPython(String text, String language, int timeoutMs) {
