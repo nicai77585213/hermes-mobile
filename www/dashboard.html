@@ -943,7 +943,26 @@ $('rowReconnect').addEventListener('click', function(){
   setConn('thinking', '重连中…');
   refreshNow();
 });
-$('rowServer').addEventListener('click', function(){ location.href = 'index.html'; });
+$('rowServer').addEventListener('click', function(){
+  // 设置页内直接编辑服务器地址(不跳连接页)
+  var cur = HOST || '';
+  var input = prompt('服务器地址 (支持局域网或公网地址):\n例如 http://192.168.1.248:8400\n或 http://49.234.196.103:8400', cur);
+  if (input && input.trim()) {
+    var v = input.trim();
+    if (!/^https?:\/\//i.test(v)) v = 'http://' + v;
+    try { localStorage.setItem(LS_KEY_NEW, v); } catch (e) {}
+    location.reload(); // 重载应用新地址
+  }
+});
+// 点御衡logo返回概览
+var logoEl = document.querySelector('.logo');
+if (logoEl) {
+  logoEl.style.cursor = 'pointer';
+  logoEl.addEventListener('click', function(){
+    var ov = document.querySelector('.nav-item[data-tab="overview"]');
+    if (ov) ov.click();
+  });
+}
 
 /* ---------- 版本号 ---------- */
 $('verLabel').textContent = 'v' + window.HERMES_WWW_VERSION;
