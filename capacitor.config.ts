@@ -6,7 +6,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 //   3. 用户不需要安装额外运行环境或执行额外准备步骤。
 const config: CapacitorConfig = {
   appId: 'com.sesaloy.hermes',
-  appName: '御衡',
+  appName: '衡鉴',
   webDir: 'www',
   server: {
     cleartext: true,

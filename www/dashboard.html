@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0A0E13">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>御衡 · 驾驶舱 v1.6</title>
+<title>衡鉴 · 驾驶舱 v1.6</title>
 <!-- 字体: CDN 兜底(先声明, 被下方本地 @font-face 覆盖); 本地 woff2 优先, 离线可用; 最终回退系统字体 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=system-ui:wght@500;700;900&family="PingFang SC":wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -91,6 +91,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .content{flex:1;overflow-y:auto;overflow-x:hidden;padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3);min-width:0;-webkit-overflow-scrolling:touch;position:relative}
 .view-tab{display:none;flex-direction:column;min-height:0;flex:1}
 .view-tab.is-active{display:flex;animation:fadeIn .22s ease}
+@keyframes slideUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .section-title{font-size:11px;color:var(--text-dim);letter-spacing:2px;margin:4px 0 8px;display:flex;justify-content:space-between;align-items:center;font-weight:600;gap:8px}
 .section-title .ts{font-family:var(--font-mono);color:var(--accent-cyan);font-size:10px;white-space:nowrap}
@@ -250,10 +251,10 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 </head>
 <body>
 <div class="phone">
-  <div class="statusbar"><span id="clock">09:41</span><span>御衡</span><span>▮▮▮</span></div>
+  <div class="statusbar"><span id="clock">09:41</span><span>衡鉴</span><span>▮▮▮</span></div>
   <div class="topbar">
     <div class="logo">
-      <svg viewBox="0 0 40 40" role="img" aria-label="御衡" style="width:30px;height:30px">
+      <svg viewBox="0 0 40 40" role="img" aria-label="衡鉴" style="width:30px;height:30px">
         <defs>
           <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stop-color="#F5E3B8"/><stop offset="0.45" stop-color="#D4AF6A"/><stop offset="1" stop-color="#A8843C"/>
@@ -266,7 +267,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
         <path d="M20 8.6 L27.2 12.8 V21.2 L20 25.4 L12.8 21.2 V12.8 Z" fill="none" stroke="url(#ls2)" stroke-width="1.3" opacity="0.9"/>
         <path d="M15.6 13.4 V26.6 M24.4 13.4 V26.6 M15.6 20 H24.4" fill="none" stroke="url(#lg2)" stroke-width="2.1" stroke-linecap="round"/>
       </svg>
-      <div class="nm"><b>御衡</b><span>远程驾驶舱</span></div>
+      <div class="nm"><b>衡鉴</b><span>远程驾驶舱</span></div>
     </div>
     <span class="badge offline" id="connBadge" aria-live="polite"><span class="dot"></span><span class="spin"></span><span id="badgeText">连接中…</span></span>
   </div>
@@ -343,14 +344,14 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
         <div class="chat-list" id="chatList">
           <div class="msg agent"><div class="avatar">◈</div><div class="body">
             <div class="bubble">连接已建立。当前电脑状态正常，有什么需要我执行的吗？</div>
-            <div class="meta"><span>御衡</span><span id="greetTime">--:--:--</span><span class="s">● 在线</span></div>
+            <div class="meta"><span>衡鉴</span><span id="greetTime">--:--:--</span><span class="s">● 在线</span></div>
           </div></div>
         </div>
         <div class="cmd-chips">
           <span class="cmd-chip" data-cmd="mt5状态">mt5状态</span><span class="cmd-chip" data-cmd="查看cron">查看cron</span><span class="cmd-chip" data-cmd="API用量">API用量</span><span class="cmd-chip" data-cmd="截图桌面">截图桌面</span>
         </div>
         <div class="chat-input">
-          <input id="chatInp" placeholder="给御衡下达指令..." aria-label="指令输入">
+          <input id="chatInp" placeholder="给衡鉴下达指令..." aria-label="指令输入">
           <button class="btn-send" id="btnSend" disabled>发送</button>
         </div>
         <div class="chat-opts">
@@ -391,12 +392,12 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
         <div class="svc-row clickable" id="rowReconnect"><span class="svc-name">立即重连服务器</span><span class="svc-port" style="color:var(--primary)">重连 ▸</span></div>
       </div>
       <div class="card" style="text-align:center">
-        <div style="font-family:var(--font-sci);font-size:13px;color:var(--primary-dim);letter-spacing:2px">御衡</div>
+        <div style="font-family:var(--font-sci);font-size:13px;color:var(--primary-dim);letter-spacing:2px">衡鉴</div>
         <div style="font-size:10px;color:var(--text-dim);margin-top:6px" id="verLabel">v1.5</div>
       </div>
       <div class="card">
         <h3>头像设置 <span class="more">点击切换</span></h3>
-        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">御衡（助手）</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">衡鉴（助手）</div>
         <div class="avatar-pick" id="pickAgent">
           <button class="av-item sel" data-k="hex"><span id="avA0"></span>徽章</button>
           <button class="av-item" data-k="star"><span id="avA1"></span>星舰</button>
@@ -423,7 +424,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 </div>
 <script>
 /* ============================================================
- * 御衡 HERMES 驾驶舱 v1.5 — 正式版
+ * 衡鉴 HERMES 驾驶舱 v1.5 — 正式版
  * 后端: http://<电脑IP>:8400  (hermes-remote/server.py)
  *   GET /api/all   一次取全部 (hermes/system/services/projects/mt5/cron)
  *   POST /api/chat/send {text}          → 指令入队
@@ -751,7 +752,7 @@ function appendMsg(type, html){
   var d = document.createElement('div'); d.className = 'msg ' + type;
   d.innerHTML = type === 'me'
     ? '<div class="avatar">☰</div><div class="body">'+html+'<div class="meta"><span>我</span><span>'+nowHMS()+'</span></div></div>'
-    : '<div class="avatar">◈</div><div class="body">'+html+'<div class="meta"><span>御衡</span><span>'+nowHMS()+'</span></div></div>';
+    : '<div class="avatar">◈</div><div class="body">'+html+'<div class="meta"><span>衡鉴</span><span>'+nowHMS()+'</span></div></div>';
   chatList.appendChild(d); chatList.scrollTop = chatList.scrollHeight;
 }
 /* 系统通知(定时任务完成/服务状态推送/指令确认类)不进聊天, 聊天只保留用户与agent对话 */
@@ -954,16 +955,33 @@ function showProjectDetail(p){
     ['创建', p.created],
     ['路径', p.path],
   ].filter(function(r){ return r[1]; });
-  ov.innerHTML = '<div class="pd-card">'
-    + '<div class="pd-head"><span class="pd-title">'+esc(p.name)+'</span>'
+  ov.innerHTML = '<div class="pd-card" id="pdCard">'
+    + '<div class="pd-head"><span class="pd-back" onclick="hideProjectDetail()">‹ 返回</span>'
+    + '<span class="pd-title">'+esc(p.name)+'</span>'
     + '<span class="pd-close" onclick="hideProjectDetail()">✕</span></div>'
+    + '<div class="pd-prog"><div class="pd-prog-bar"><i style="width:'+(clamp(parseInt(p.progress,10)||0,0,100))+'%"></i></div>'
+    + '<span class="pd-pct">'+(clamp(parseInt(p.progress,10)||0,0,100))+'%</span></div>'
     + '<div class="pd-body">' + rows.map(function(r){
         return '<div class="pd-row"><div class="pd-key">'+esc(r[0])+'</div>'
           + '<div class="pd-val">'+esc(String(r[1]))+'</div></div>';
       }).join('') + '</div>'
-    + '<div class="pd-foot"><button onclick="hideProjectDetail()">关闭</button></div>'
     + '</div>';
   ov.classList.add('show');
+  // 右滑关闭(返回项目列表)
+  var card = $('pdCard');
+  if(card){
+    var sx = 0;
+    card.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; }, {passive:true});
+    card.addEventListener('touchmove', function(e){
+      var dx = e.touches[0].clientX - sx;
+      if(dx > 0 && !ov.dataset.moving){ ov.dataset.moving='1'; card.style.transition='transform .15s ease'; card.style.transform='translateX('+Math.min(dx,180)+'px)'; ov.dataset.moving=''; }
+    }, {passive:true});
+    card.addEventListener('touchend', function(e){
+      var dx = (e.changedTouches[0].clientX - sx);
+      if(dx > 90){ hideProjectDetail(); }
+      card.style.transition='transform .2s ease'; card.style.transform='';
+    }, {passive:true});
+  }
 }
 function hideProjectDetail(){
   var ov = $('projDetailOverlay');
@@ -996,7 +1014,7 @@ $('rowUpdate').addEventListener('click', function(){
       label.textContent = orig;
     }
   } else {
-    alert('当前环境不支持在线更新，需在御衡APP内使用');
+    alert('当前环境不支持在线更新，需在衡鉴APP内使用');
   }
 });
 $('rowReconnect').addEventListener('click', function(){
@@ -1014,7 +1032,7 @@ $('rowServer').addEventListener('click', function(){
     location.reload(); // 重载应用新地址
   }
 });
-// 点御衡logo返回概览
+// 点衡鉴logo返回概览
 var logoEl = document.querySelector('.logo');
 if (logoEl) {
   logoEl.style.cursor = 'pointer';
