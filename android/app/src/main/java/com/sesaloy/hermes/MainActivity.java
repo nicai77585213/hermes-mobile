@@ -359,7 +359,10 @@ public class MainActivity extends BridgeActivity {
         }
 
         WebView webView = bridge.getWebView();
+        // 每次启动清缓存, 防止覆盖安装后显示旧版界面(Hermes手机版残留)
+        webView.clearCache(true);
         WebSettings settings = webView.getSettings();
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setUseWideViewPort(false);
         settings.setLoadWithOverviewMode(false);
         settings.setTextZoom(100);

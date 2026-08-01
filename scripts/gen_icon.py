@@ -39,10 +39,10 @@ def radial_bg(size, r=9):
     mask = grad.point(lambda p: 255)
     base.paste(Image.new('RGBA', (size, size), BG_HI + (255,)), (0, 0), grad)
     base = base.point(lambda p: p)  # noop
-    # 圆角裁剪
-    mask_round = Image.new('L', (size, size), 0)
-    ImageDraw.Draw(mask_round).rounded_rectangle([0, 0, size - 1, size - 1], radius=int(size * r / 48), fill=255)
-    base.putalpha(mask_round)
+    # 圆形裁剪(任何系统蒙版裁切后仍对称, 符号永远居中)
+    mask_circle = Image.new('L', (size, size), 0)
+    ImageDraw.Draw(mask_circle).ellipse([0, 0, size - 1, size - 1], fill=255)
+    base.putalpha(mask_circle)
     return base
 
 
@@ -50,7 +50,7 @@ def draw_core(d, s, ox=0, oy=0):
     """在 s 尺寸画布上绘制核心符号, ox/oy为画布偏移(用于居中)"""
     c = s / 2 + ox
     cy0 = s / 2 + oy
-    R_ring = s * 0.30
+    R_ring = s * 0.29
     w_ring = max(1, s * 0.023)
     # 金环
     d.ellipse([c - R_ring, cy0 - R_ring, c + R_ring, cy0 + R_ring], outline=GOLD, width=int(w_ring))
@@ -89,7 +89,7 @@ def gen_launcher(size, path):
 def gen_foreground(size, path):
     img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    # adaptive前景: 内容缩到中心66%(安全区), 必须平移到画布正中
+    # adaptive前景: 内容缩到中心66%(安全区), 环直径0.396画布<0.61蒙版安全区
     core = size * 0.66
     ox = (size - core) / 2
     oy = (size - core) / 2
