@@ -958,7 +958,7 @@ function showProjectDetail(p){
   ov.innerHTML = '<div class="pd-card" id="pdCard">'
     + '<div class="pd-head"><span class="pd-back" onclick="hideProjectDetail()">‹ 返回</span>'
     + '<span class="pd-title">'+esc(p.name)+'</span>'
-    + '<span class="pd-close" onclick="hideProjectDetail()">✕</span></div>'
+    + '<span class="pd-close" id="pdCloseBtn">✕</span></div>'
     + '<div class="pd-prog"><div class="pd-prog-bar"><i style="width:'+(clamp(parseInt(p.progress,10)||0,0,100))+'%"></i></div>'
     + '<span class="pd-pct">'+(clamp(parseInt(p.progress,10)||0,0,100))+'%</span></div>'
     + '<div class="pd-body">' + rows.map(function(r){
@@ -987,6 +987,14 @@ function hideProjectDetail(){
   var ov = $('projDetailOverlay');
   if(ov) ov.classList.remove('show');
 }
+// 事件委托: 弹层关闭(返回/✕/遮罩) — 不依赖onclick属性(防作用域问题)
+document.addEventListener('click', function(e){
+  var t = e.target;
+  if(!t || !t.classList) return;
+  if(t.classList.contains('pd-back') || t.classList.contains('pd-close')){
+    hideProjectDetail();
+  }
+});
 if(projSearch) projSearch.addEventListener('input', applyProjectFilter);
 
 /* ---------- 设置: 检查更新 / 重连 / 服务器 ---------- */
