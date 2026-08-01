@@ -800,17 +800,16 @@ public class MainActivity extends BridgeActivity {
 
     private class HermesAndroidBridge {
         @JavascriptInterface
-        public boolean enterPictureInPictureMode() {
-            // 最小窗口(画中画), Android 8.0+ (API 26+, 封装避免lint NewApi)
+        public void enterPictureInPictureMode() {
+            // 最小窗口(画中画), Android 8.0+ (API 26+, BridgeActivity已override为void)
             if (Build.VERSION.SDK_INT >= 26) {
-                return enterPipSafely();
+                enterPipSafely();
             }
-            return false;
         }
 
         @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.O)
-        private boolean enterPipSafely() {
-            return MainActivity.this.enterPictureInPictureMode();
+        private void enterPipSafely() {
+            MainActivity.this.enterPictureInPictureMode();
         }
 
         @JavascriptInterface
