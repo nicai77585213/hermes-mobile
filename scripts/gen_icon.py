@@ -46,33 +46,34 @@ def radial_bg(size, r=9):
     return base
 
 
-def draw_core(d, s):
-    """在 s 尺寸画布上绘制核心符号(居中)"""
-    c = s / 2
-    R_ring = s * 0.316
+def draw_core(d, s, ox=0, oy=0):
+    """在 s 尺寸画布上绘制核心符号, ox/oy为画布偏移(用于居中)"""
+    c = s / 2 + ox
+    cy0 = s / 2 + oy
+    R_ring = s * 0.30
     w_ring = max(1, s * 0.023)
     # 金环
-    d.ellipse([c - R_ring, c - R_ring, c + R_ring, c + R_ring], outline=GOLD, width=int(w_ring))
+    d.ellipse([c - R_ring, cy0 - R_ring, c + R_ring, cy0 + R_ring], outline=GOLD, width=int(w_ring))
     # 环上菱形点(上下左右)
     for dx, dy, op in [(0, -1, 255), (0, 1, 180), (-1, 0, 180), (1, 0, 180)]:
-        px, py = c + dx * R_ring, c + dy * R_ring
+        px, py = c + dx * R_ring, cy0 + dy * R_ring
         r = s * 0.02
         d.polygon([(px, py - r), (px + r, py), (px, py + r), (px - r, py)], fill=GOLD_HI + (op,))
     # 内六边形(钢蓝)
-    hex_r = s * 0.23
-    pts = [(c + hex_r * math.cos(math.radians(a)), c + hex_r * math.sin(math.radians(a)))
+    hex_r = s * 0.225
+    pts = [(c + hex_r * math.cos(math.radians(a)), cy0 + hex_r * math.sin(math.radians(a)))
            for a in range(-90, 270, 60)]
     d.polygon(pts, outline=STEEL_HI, width=int(max(1, s * 0.027)))
     # 核心H(金色)
     hw = s * 0.075   # 笔划宽
     x1, x2 = c - s * 0.105, c + s * 0.105
-    y1, y2 = c - s * 0.14, c + s * 0.14
-    d.line([(x1, y1), (x1, y2)], fill=GOLD, width=int(max(1,hw)))
-    d.line([(x2, y1), (x2, y2)], fill=GOLD, width=int(max(1,hw)))
-    d.line([(x1, c), (x2, c)], fill=GOLD, width=int(max(1,hw)))
+    y1, y2 = cy0 - s * 0.14, cy0 + s * 0.14
+    d.line([(x1, y1), (x1, y2)], fill=GOLD, width=int(max(1, hw)))
+    d.line([(x2, y1), (x2, y2)], fill=GOLD, width=int(max(1, hw)))
+    d.line([(x1, cy0), (x2, cy0)], fill=GOLD, width=int(max(1, hw)))
     # H中点亮点
     dot_r = s * 0.028
-    d.ellipse([c - dot_r, c - dot_r, c + dot_r, c + dot_r], fill=GOLD_HI)
+    d.ellipse([c - dot_r, cy0 - dot_r, c + dot_r, cy0 + dot_r], fill=GOLD_HI)
 
 
 def gen_launcher(size, path):
@@ -88,9 +89,11 @@ def gen_launcher(size, path):
 def gen_foreground(size, path):
     img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    # adaptive前景: 内容缩到中心70%(安全区)
-    draw_core(d, size * 0.72)
-    # 前景需要可缩放的圆形裁剪(系统做), 直接输出透明底即可
+    # adaptive前景: 内容缩到中心66%(安全区), 必须平移到画布正中
+    core = size * 0.66
+    ox = (size - core) / 2
+    oy = (size - core) / 2
+    draw_core(d, core, ox=ox, oy=oy)
     img.save(path)
 
 
