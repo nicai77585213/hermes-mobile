@@ -20,6 +20,8 @@ android {
             buildPython (hermesPy ?: "C:/Program Files/Python311/python.exe")
             pip {
                 install "-r", "src/main/python/requirements-hermes-android.txt"
+                // 注意：不手动配options——Chaquopy内部自己处理Chaquo仓库+PyPI的依赖解析，
+                // 手动配index会破坏它（Android wheel与纯Python包跨源依赖会失败）。首次装依赖走国外源较慢属正常。
             }
         }
         aaptOptions {
