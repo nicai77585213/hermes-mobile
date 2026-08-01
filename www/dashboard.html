@@ -19,22 +19,34 @@
 @font-face{font-family:'Share Tech Mono';font-style:normal;font-weight:400;src:url('fonts/ShareTechMono-400.woff2') format('woff2');font-display:swap}
 /* ===== Design Tokens v1.5 ===== */
 :root{
+  --primary:#FFB74D; --on-primary:#1A1605; --primary-dim:#D4AF37; --primary-deep:#B8860B;
+  --accent-cyan:#4DD0E1; --accent-purple:#9D8FE8;
+  --success:#66BB6A; --warning:#FFA726; --error:#EF5350; --info:#42A5F5;
+  --bg-base:#0A0E13; --surface-low:#111821; --surface-mid:#161E29; --surface-high:#1C2634;
+  --text-primary:#E8E6DF; --text-secondary:#9AA3B2; --text-dim:#8A93A3;
+  --outline:#3A4356; --outline-variant:#2A3140;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-full:999px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px;
+  --font-size-base:14px;
+  --font-sci:'Orbitron','Rajdhani',system-ui,sans-serif;
+  --font-label:'Rajdhani','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-mono:'Share Tech Mono','JetBrains Mono',Consolas,monospace;
+  --nav-h:calc(60px + env(safe-area-inset-bottom));
+}
+/* ===== 主题B: 简约靛紫 (data-theme=minimal) ===== */
+:root[data-theme="minimal"]{
   --primary:#5E6AD2; --on-primary:#FFFFFF; --primary-dim:#6E7BD9; --primary-deep:#4C5BA8;
   --accent-cyan:#7EC8E3; --accent-purple:#8B7FE8;
   --success:#34D399; --warning:#FBBF24; --error:#F87171; --info:#60A5FA;
   --bg-base:#08090A; --surface-low:#0F1011; --surface-mid:#141517; --surface-high:#191A1B;
   --text-primary:#F5F6F7; --text-secondary:#9CA1A8; --text-dim:#62666D;
   --outline:rgba(255,255,255,.12); --outline-variant:rgba(255,255,255,.07);
-  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-full:999px;
-  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px;
-  --font-size-base:14px;
   --font-sci:system-ui,'PingFang SC','Microsoft YaHei',sans-serif;
   --font-label:system-ui,'PingFang SC','Microsoft YaHei',sans-serif;
-  --font-mono:'Share Tech Mono','JetBrains Mono',Consolas,monospace;
-  --nav-h:calc(60px + env(safe-area-inset-bottom));
 }
+/* 主题B的浅色模式(跟随系统) */
 @media (prefers-color-scheme: light){
-  :root{
+  :root[data-theme="minimal"]{
     --primary:#5E6AD2; --on-primary:#FFFFFF; --primary-dim:#6E7BD9; --primary-deep:#4C5BA8;
     --accent-cyan:#3A9DB8; --accent-purple:#7B6FD8;
     --success:#2E9E6B; --warning:#D97706; --error:#D64545; --info:#3B82C4;
@@ -228,6 +240,10 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 /* 设置行值可点击 */
 .svc-row.clickable{cursor:pointer}
 .svc-row.clickable:active{background:rgba(255,183,77,.05)}
+
+.theme-pick{flex:1;padding:9px 0;border-radius:var(--r-sm);border:1px solid var(--outline);background:var(--surface-low);color:var(--text-secondary);font-size:12px;font-family:var(--font-label);cursor:pointer}
+.theme-pick.on{border-color:var(--primary);color:var(--primary);box-shadow:0 0 8px rgba(255,183,77,.15)}
+
 /* 无障碍: 减少动态 */
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -364,7 +380,11 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
       <div class="card">
         <div class="svc-row" id="rowServer" title="点击返回连接页"><span class="svc-name">服务器地址</span><span class="svc-port" style="color:var(--accent-cyan)" id="setHost">--</span></div>
         <div class="svc-row"><span class="svc-name">刷新频率</span><span class="svc-port">10 秒</span></div>
-        <div class="svc-row"><span class="svc-name">主题</span><span class="svc-port">深空黑金</span></div>
+        <div class="svc-row"><span class="svc-name">主题</span><span class="svc-port" id="themeName">--</span></div>
+        <div style="display:flex;gap:8px;padding:4px 0 8px">
+          <button class="theme-pick" id="themeGold" data-theme-val="gold">深空黑金</button>
+          <button class="theme-pick" id="themeMin" data-theme-val="minimal">简约靛紫</button>
+        </div>
         <div class="svc-row clickable" id="rowUpdate"><span class="svc-name">检查更新</span><span class="svc-port" style="color:var(--primary)">点击检查 ▸</span></div>
         <div class="svc-row clickable" id="rowReconnect"><span class="svc-name">立即重连服务器</span><span class="svc-port" style="color:var(--primary)">重连 ▸</span></div>
       </div>
@@ -928,9 +948,30 @@ $('rowServer').addEventListener('click', function(){ location.href = 'index.html
 /* ---------- 版本号 ---------- */
 $('verLabel').textContent = 'v' + window.HERMES_WWW_VERSION;
 
+
+/* ===== 主题切换(金科幻/简约靛紫) ===== */
+var THEMES={gold:'深空黑金',minimal:'简约靛紫'};
+function applyTheme(t){
+  if(t==='minimal'){ document.documentElement.setAttribute('data-theme','minimal'); }
+  else { document.documentElement.removeAttribute('data-theme'); }
+  try{ localStorage.setItem('hermes.theme',t); }catch(e){}
+  var n=document.getElementById('themeName'); if(n) n.textContent=THEMES[t]||'深空黑金';
+  var g=document.getElementById('themeGold'), m=document.getElementById('themeMin');
+  if(g) g.classList.toggle('on', t!=='minimal');
+  if(m) m.classList.toggle('on', t==='minimal');
+}
+function initTheme(){
+  var t='gold';
+  try{ t=localStorage.getItem('hermes.theme')||'gold'; }catch(e){}
+  applyTheme(t);
+  var g=document.getElementById('themeGold'), m=document.getElementById('themeMin');
+  if(g) g.addEventListener('click',function(){applyTheme('gold');});
+  if(m) m.addEventListener('click',function(){applyTheme('minimal');});
+}
+
 /* ---------- 初始化 ---------- */
 $('setHost').textContent = HOST ? HOST.replace(/^https?:\/\//,'') : '未配置';
-applyAvatars(); renderPicks();
+applyAvatars(); renderPicks(); initTheme();
 if(HOST){
   setConn('thinking', '连接中…');
   fetchAll();

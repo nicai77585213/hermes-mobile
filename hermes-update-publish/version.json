@@ -1,7 +1,7 @@
 {
   "version": "1.6",
   "zip": "/hermes-update/www-1.6.zip",
-  "built_at": "2026-08-01 12:34:23",
+  "built_at": "2026-08-01 12:47:24",
   "files": [
     {
       "path": "apple-touch-icon.png",
@@ -10,8 +10,8 @@
     },
     {
       "path": "dashboard.html",
-      "size": 61290,
-      "sha256": "54c915f7b44094bd0329b31e11fb0f7b3adbb4a26ad0f012db8c017ddd3956a9"
+      "size": 63622,
+      "sha256": "f30fb8c419e9c98b61cc24191e2763b051f5ddda314b5c81c7ff4de7b817be7f"
     },
     {
       "path": "hermes-mobile-bridge.js",
