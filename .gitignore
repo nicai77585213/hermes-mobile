@@ -8,3 +8,6 @@ build/
 .gradle/
 local.properties
 *.log
+
+# 热更新构建产物
+hermes-update-publish/

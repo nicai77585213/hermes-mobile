@@ -37,7 +37,7 @@ let r=await fetch(url+'/health');
 let d=await r.json();
 if(d.ok){
 localStorage.setItem('hermes_host',url);
-location.href=url;
+location.href='dashboard.html';
 }else{
 document.getElementById('msg').textContent='连接失败，检查IP';
 document.getElementById('form').style.display='block';
@@ -56,7 +56,7 @@ if(saved){
 document.getElementById('form').style.display='none';
 document.getElementById('loading').style.display='block';
 fetch(saved+'/health').then(r=>r.json()).then(d=>{
-if(d.ok)location.href=saved;
+if(d.ok)location.href='dashboard.html';
 else{
 document.getElementById('form').style.display='block';
 document.getElementById('loading').style.display='none';
