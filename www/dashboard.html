@@ -9,30 +9,41 @@
 <title>御衡 · 驾驶舱 v1.5</title>
 <!-- 字体: CDN 兜底(先声明, 被下方本地 @font-face 覆盖); 本地 woff2 优先, 离线可用; 最终回退系统字体 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=system-ui:wght@500;700;900&family="PingFang SC":wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 /* ===== 本地字体(优先) ===== 2026-08-01 已内置 www/fonts/, 离线可用; 若本地缺失则回退上方 CDN, 再回退系统字体 */
-@font-face{font-family:'Orbitron';font-style:normal;font-weight:500 900;src:url('fonts/Orbitron-500.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Rajdhani';font-style:normal;font-weight:500;src:url('fonts/Rajdhani-500.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Rajdhani';font-style:normal;font-weight:600;src:url('fonts/Rajdhani-600.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Rajdhani';font-style:normal;font-weight:700;src:url('fonts/Rajdhani-700.woff2') format('woff2');font-display:swap}
+@font-face{font-family:;font-style:normal;font-weight:500 900;src:url('fonts/system-ui-500.woff2') format('woff2');font-display:swap}
+@font-face{font-family:;font-style:normal;font-weight:500;src:url('fonts/"PingFang SC"-500.woff2') format('woff2');font-display:swap}
+@font-face{font-family:;font-style:normal;font-weight:600;src:url('fonts/"PingFang SC"-600.woff2') format('woff2');font-display:swap}
+@font-face{font-family:;font-style:normal;font-weight:700;src:url('fonts/"PingFang SC"-700.woff2') format('woff2');font-display:swap}
 @font-face{font-family:'Share Tech Mono';font-style:normal;font-weight:400;src:url('fonts/ShareTechMono-400.woff2') format('woff2');font-display:swap}
 /* ===== Design Tokens v1.5 ===== */
 :root{
-  --primary:#FFB74D; --on-primary:#1A1605; --primary-dim:#D4AF37; --primary-deep:#B8860B;
-  --accent-cyan:#4DD0E1; --accent-purple:#9D8FE8;
-  --success:#66BB6A; --warning:#FFA726; --error:#EF5350; --info:#42A5F5;
-  --bg-base:#0A0E13; --surface-low:#111821; --surface-mid:#161E29; --surface-high:#1C2634;
-  --text-primary:#E8E6DF; --text-secondary:#9AA3B2; --text-dim:#8A93A3;
-  --outline:#3A4356; --outline-variant:#2A3140;
+  --primary:#5E6AD2; --on-primary:#FFFFFF; --primary-dim:#6E7BD9; --primary-deep:#4C5BA8;
+  --accent-cyan:#7EC8E3; --accent-purple:#8B7FE8;
+  --success:#34D399; --warning:#FBBF24; --error:#F87171; --info:#60A5FA;
+  --bg-base:#08090A; --surface-low:#0F1011; --surface-mid:#141517; --surface-high:#191A1B;
+  --text-primary:#F5F6F7; --text-secondary:#9CA1A8; --text-dim:#62666D;
+  --outline:rgba(255,255,255,.12); --outline-variant:rgba(255,255,255,.07);
   --r-sm:8px; --r-md:12px; --r-lg:16px; --r-full:999px;
   --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px;
   --font-size-base:14px;
-  --font-sci:'Orbitron','Rajdhani',system-ui,sans-serif;
-  --font-label:'Rajdhani','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-sci:system-ui,'PingFang SC','Microsoft YaHei',sans-serif;
+  --font-label:system-ui,'PingFang SC','Microsoft YaHei',sans-serif;
   --font-mono:'Share Tech Mono','JetBrains Mono',Consolas,monospace;
   --nav-h:calc(60px + env(safe-area-inset-bottom));
 }
+@media (prefers-color-scheme: light){
+  :root{
+    --primary:#5E6AD2; --on-primary:#FFFFFF; --primary-dim:#6E7BD9; --primary-deep:#4C5BA8;
+    --accent-cyan:#3A9DB8; --accent-purple:#7B6FD8;
+    --success:#2E9E6B; --warning:#D97706; --error:#D64545; --info:#3B82C4;
+    --bg-base:#F5F6F7; --surface-low:#FFFFFF; --surface-mid:#F0F1F3; --surface-high:#E8EAED;
+    --text-primary:#1A1D21; --text-secondary:#5C6066; --text-dim:#8A8F98;
+    --outline:rgba(0,0,0,.12); --outline-variant:rgba(0,0,0,.07);
+  }
+}
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-base);display:flex;justify-content:center;align-items:center;color:var(--text-primary)}
@@ -43,9 +54,9 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .statusbar{height:28px;flex:0 0 28px;display:flex;justify-content:space-between;align-items:center;padding:0 clamp(16px,4vw,24px);font-size:10px;color:var(--text-secondary);font-family:var(--font-mono);background:var(--bg-base)}
 /* ===== Logo ===== */
 .logo{display:flex;align-items:center;gap:9px;min-width:0}
-.logo svg{width:30px;height:30px;flex:0 0 30px;filter:drop-shadow(0 0 8px rgba(212,175,55,.5))}
+.logo svg{width:30px;height:30px;flex:0 0 30px;filter:drop-shadow(0 0 6px rgba(94,106,210,.4))}
 .logo .nm{display:flex;flex-direction:column;line-height:1.08;min-width:0}
-.logo .nm b{font-family:var(--font-label);font-size:clamp(16px,4.6vw,19px);font-weight:700;letter-spacing:6px;text-indent:6px;color:var(--primary-dim);text-shadow:0 0 16px rgba(212,175,55,.45);white-space:nowrap}
+.logo .nm b{font-family:var(--font-label);font-size:clamp(16px,4.6vw,19px);font-weight:700;letter-spacing:6px;text-indent:6px;color:var(--primary-dim);text-shadow:0 0 16px rgba(94,106,210,.45);white-space:nowrap}
 .logo .nm span{font-family:var(--font-label);font-size:clamp(8px,2.2vw,9px);letter-spacing:3px;color:var(--text-dim);white-space:nowrap}
 /* 顶栏 */
 .topbar{height:52px;flex:0 0 52px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 var(--space-4);background:var(--bg-base);min-width:0}
@@ -82,7 +93,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 /* 仪表 */
 .gauge-row{display:flex;justify-content:space-around;gap:var(--space-2);min-width:0}
 .gauge{text-align:center;flex:1;min-width:0}
-.gauge svg{width:clamp(58px,18vw,76px);height:auto;filter:drop-shadow(0 0 6px rgba(212,175,55,.15));max-width:100%}
+.gauge svg{width:clamp(58px,18vw,76px);height:auto;;max-width:100%}
 .gauge .arc{stroke:var(--primary);stroke-linecap:round;transition:stroke-dashoffset .8s ease-out}
 .gauge .arc.danger{stroke:var(--error)}
 .gauge .val{font-family:var(--font-mono);font-size:clamp(14px,4.5vw,18px);font-weight:700;fill:var(--primary);dominant-baseline:central}
@@ -118,7 +129,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .proj-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
 /* 项目进度条(运行中) */
 .proj-progress{height:4px;border-radius:2px;background:var(--outline-variant);overflow:hidden;position:relative}
-.proj-progress i{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#D4AF37,#FFB74D);border-radius:2px;transition:width .6s ease}
+.proj-progress i{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#5E6AD2,#6E7BD9);border-radius:2px;transition:width .6s ease}
 .proj-progress i::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:shimmer 1.6s infinite}
 @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 .proj-pct{font-family:var(--font-mono);font-size:9px;color:var(--primary-dim);display:flex;justify-content:space-between}
@@ -143,7 +154,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .msg .body{max-width:78%;min-width:0;display:flex;flex-direction:column;gap:4px}
 .msg .bubble{position:relative;padding:10px 13px;font-size:clamp(12px,3.6vw,14px);line-height:1.55;border-radius:14px;word-break:break-word;overflow-wrap:anywhere}
 .msg.agent .bubble{background:var(--surface-mid);border:1px solid var(--outline-variant);border-top-left-radius:4px;color:var(--text-primary)}
-.msg.me .bubble{background:linear-gradient(135deg,rgba(255,183,77,.16),rgba(212,175,55,.08));border:1px solid rgba(255,183,77,.35);border-top-right-radius:4px;color:var(--text-primary)}
+.msg.me .bubble{background:linear-gradient(135deg,rgba(255,183,77,.16),rgba(94,106,210,.08));border:1px solid rgba(255,183,77,.35);border-top-right-radius:4px;color:var(--text-primary)}
 .msg .meta{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);padding:0 3px;display:flex;gap:8px;align-items:center}
 .msg.me .meta{justify-content:flex-end}
 .msg .meta .s{color:var(--success)}
@@ -164,7 +175,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .chat-input{flex:0 0 auto;background:var(--surface-high);border:1px solid var(--outline);border-radius:16px;padding:6px;display:flex;align-items:flex-end;gap:8px;min-width:0}
 .chat-input input{flex:1;min-width:0;height:48px;background:transparent;border:none;outline:none;color:var(--text-primary);font-size:16px;padding:0 8px;font-family:var(--font-label)}
 .chat-input input::placeholder{color:var(--text-dim)}
-.btn-send{flex:0 0 52px;height:44px;border-radius:12px;background:linear-gradient(135deg,#FFB74D,#E08A2E);border:none;color:var(--on-primary);font-family:var(--font-label);font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;box-shadow:0 2px 10px rgba(255,183,77,.25);display:flex;align-items:center;justify-content:center;transition:opacity .2s}
+.btn-send{flex:0 0 52px;height:44px;border-radius:12px;background:linear-gradient(135deg,#6E7BD9,#E08A2E);border:none;color:var(--on-primary);font-family:var(--font-label);font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;box-shadow:0 2px 10px rgba(255,183,77,.25);display:flex;align-items:center;justify-content:center;transition:opacity .2s}
 .btn-send:active{transform:scale(.96)}
 .btn-send:disabled{opacity:.35;box-shadow:none;cursor:default}
 /* 输入框下方: 模型+思考等级(小巧,不占输入框) */
@@ -182,7 +193,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .cmd-chip:active{transform:scale(.97);background:var(--surface-high);color:var(--primary);border-color:var(--primary-deep)}
 /* 底部导航 */
 .bottomnav{flex:0 0 var(--nav-h);background:transparent;display:flex;justify-content:space-around;align-items:center;padding-bottom:env(safe-area-inset-bottom);min-width:0;position:relative}
-.bottomnav::before{content:'';position:absolute;top:0;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.18),transparent)}
+.bottomnav::before{content:'';position:absolute;top:0;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(94,106,210,.18),transparent)}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text-dim);flex:1;min-width:0;padding:6px 0;border-radius:14px;font-weight:600;letter-spacing:.5px;transition:all .2s;white-space:nowrap;position:relative;cursor:pointer;background:none;border:none}
 .nav-item:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
 .nav-item .ic{font-size:19px;line-height:1;transition:all .2s;position:relative}
@@ -226,19 +237,18 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
   <div class="statusbar"><span id="clock">09:41</span><span>御衡</span><span>▮▮▮</span></div>
   <div class="topbar">
     <div class="logo">
-      <svg viewBox="0 0 40 40" role="img" aria-label="御衡">
-        <title>御衡</title>
+      <svg viewBox="0 0 40 40" role="img" aria-label="御衡" style="width:30px;height:30px">
         <defs>
-          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#FFD98A"/><stop offset=".5" stop-color="#D4AF37"/><stop offset="1" stop-color="#B8860B"/>
+          <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F5E3B8"/><stop offset="0.45" stop-color="#D4AF6A"/><stop offset="1" stop-color="#A8843C"/>
+          </linearGradient>
+          <linearGradient id="ls2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3A4A5E"/><stop offset="1" stop-color="#232C3A"/>
           </linearGradient>
         </defs>
-        <path d="M20 1.5 L35.5 10.75 V29.25 L20 38.5 L4.5 29.25 V10.75 Z" fill="none" stroke="url(#lg)" stroke-width="1.8"/>
-        <path d="M20 5.5 L31.5 12.2 V25.8 L20 32.5 L8.5 25.8 V12.2 Z" fill="rgba(212,175,55,.08)" stroke="rgba(212,175,55,.45)" stroke-width=".8"/>
-        <ellipse cx="20" cy="20" rx="15.5" ry="6.2" fill="none" stroke="#4DD0E1" stroke-width=".9" opacity=".85" transform="rotate(-24 20 20)"/>
-        <circle cx="31.5" cy="13.5" r="1.6" fill="#4DD0E1" opacity=".9"/>
-        <path d="M15 27 V13 H18 L22 22 L25 13 H28 V27" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
-        <circle cx="20" cy="30.5" r="1.4" fill="#FFB74D"/>
+        <circle cx="20" cy="20" r="15.2" fill="none" stroke="url(#lg2)" stroke-width="1.1" opacity="0.92"/>
+        <path d="M20 8.6 L27.2 12.8 V21.2 L20 25.4 L12.8 21.2 V12.8 Z" fill="none" stroke="url(#ls2)" stroke-width="1.3" opacity="0.9"/>
+        <path d="M15.6 13.4 V26.6 M24.4 13.4 V26.6 M15.6 20 H24.4" fill="none" stroke="url(#lg2)" stroke-width="2.1" stroke-linecap="round"/>
       </svg>
       <div class="nm"><b>御衡</b><span>HERMES 驾驶舱</span></div>
     </div>
@@ -254,15 +264,15 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
       <div class="card">
         <div class="gauge-row" id="gauges">
           <div class="gauge" id="gCpu">
-            <svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="31" fill="none" stroke="#2A3140" stroke-width="4"/><circle class="arc" cx="38" cy="38" r="31" fill="none" stroke-width="4" stroke-dasharray="194.8" stroke-dashoffset="194.8" transform="rotate(-90 38 38)"/><text x="38" y="38" text-anchor="middle" class="val">0%</text></svg>
+            <svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="31" fill="none" stroke="var(--outline-variant)" stroke-width="4"/><circle class="arc" cx="38" cy="38" r="31" fill="none" stroke-width="4" stroke-dasharray="194.8" stroke-dashoffset="194.8" transform="rotate(-90 38 38)"/><text x="38" y="38" text-anchor="middle" class="val" style="fill:var(--text-primary)">0%</text></svg>
             <div class="lbl">CPU</div><div class="sub">-- 核</div>
           </div>
           <div class="gauge" id="gMem">
-            <svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="31" fill="none" stroke="#2A3140" stroke-width="4"/><circle class="arc" cx="38" cy="38" r="31" fill="none" stroke-width="4" stroke-dasharray="194.8" stroke-dashoffset="194.8" transform="rotate(-90 38 38)"/><text x="38" y="38" text-anchor="middle" class="val">0%</text></svg>
+            <svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="31" fill="none" stroke="var(--outline-variant)" stroke-width="4"/><circle class="arc" cx="38" cy="38" r="31" fill="none" stroke-width="4" stroke-dasharray="194.8" stroke-dashoffset="194.8" transform="rotate(-90 38 38)"/><text x="38" y="38" text-anchor="middle" class="val" style="fill:var(--text-primary)">0%</text></svg>
             <div class="lbl">内存</div><div class="sub">--/-- G</div>
           </div>
           <div class="gauge" id="gDisk">
-            <svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="31" fill="none" stroke="#2A3140" stroke-width="4"/><circle class="arc" cx="38" cy="38" r="31" fill="none" stroke-width="4" stroke-dasharray="194.8" stroke-dashoffset="194.8" transform="rotate(-90 38 38)"/><text x="38" y="38" text-anchor="middle" class="val">0%</text></svg>
+            <svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="31" fill="none" stroke="var(--outline-variant)" stroke-width="4"/><circle class="arc" cx="38" cy="38" r="31" fill="none" stroke-width="4" stroke-dasharray="194.8" stroke-dashoffset="194.8" transform="rotate(-90 38 38)"/><text x="38" y="38" text-anchor="middle" class="val" style="fill:var(--text-primary)">0%</text></svg>
             <div class="lbl">磁盘</div><div class="sub">-- 可用</div>
           </div>
         </div>
@@ -318,15 +328,6 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
           <div class="msg agent"><div class="avatar">◈</div><div class="body">
             <div class="bubble">连接已建立。当前电脑状态正常，有什么需要我执行的吗？</div>
             <div class="meta"><span>御衡</span><span id="greetTime">--:--:--</span><span class="s">● 在线</span></div>
-          </div></div>
-          <div class="msg agent"><div class="avatar">◈</div><div class="body">
-            <div class="bubble">正在检查 MT5 交易状态…</div>
-            <div class="tool-card"><div class="t"><i></i>工具 · mt5检查</div><div class="d">账号 277826896 · Exness-Trial5<br>XAUUSDm 状态: <span class="ok">运行正常</span></div></div>
-            <div class="meta"><span>御衡</span><span>--:--:--</span><span class="s">✔ 完成</span></div>
-          </div></div>
-          <div class="msg agent"><div class="avatar">◈</div><div class="body">
-            <div class="bubble">已连接 <span id="chatHost" style="color:var(--accent-cyan)">--</span>，发送指令将通过队列送达电脑端 Hermes 执行。</div>
-            <div class="meta"><span>御衡</span><span>--:--:--</span><span class="s">● 通道就绪</span></div>
           </div></div>
         </div>
         <div class="cmd-chips">
@@ -671,31 +672,59 @@ setInterval(updateTs, 1000); updateTs();
 
 /* ---------- 下拉刷新 ---------- */
 var content = $('content'), pullInd = $('pullInd'), pullStart = 0, pulling = false;
+var PULL_SHOW = 60;   // 下拉超过此距离才显示指示器
+var PULL_HIDE = 30;   // 回弹不足此距离则隐藏指示器(不算完成下拉)
+function pullIndReset(){
+  pulling = false;
+  pullInd.classList.remove('show');
+  pullInd.innerHTML = '<span class="spin"></span>松开刷新';
+}
 function doRefresh(){
+  pulling = false;
   pullInd.classList.add('show');
   pullInd.innerHTML = '<span class="spin"></span>刷新中…';
-  var done = function(){
-    pullInd.classList.remove('show');
-    pullInd.innerHTML = '<span class="spin"></span>松开刷新';
+  fetchAll();
+  setTimeout(function(){  // 保证指示器至少可见片刻, 随后必定复位不残留
+    pullIndReset();
     updateTs();
-  };
-  var p = fetchAll();
-  setTimeout(done, 700); // 保证指示器至少可见片刻
+  }, 700);
 }
-content.addEventListener('touchstart', function(e){ if(content.scrollTop<=0){ pullStart=e.touches[0].clientY; pulling=true; } }, {passive:true});
+function refreshNow(){ doRefresh(); }  // 供"立即重连/手动刷新"与外部调试调用
+/* 聊天区内部滚动由 #chatList 负责, 触摸聊天列表/输入框不触发整页下拉刷新 */
+function isPullTarget(el){
+  return !(el && el.closest && (el.closest('#chatList') || el.closest('.chat-input') || el.closest('.cmd-chips')));
+}
+content.addEventListener('touchstart', function(e){
+  if(content.scrollTop <= 0 && isPullTarget(e.target)){
+    pullStart = e.touches[0].clientY; pulling = true;
+  }
+}, {passive:true});
 content.addEventListener('touchmove', function(e){
   if(!pulling) return;
   var dy = e.touches[0].clientY - pullStart;
-  if(dy > 60 && content.scrollTop<=0){ pullInd.classList.add('show'); pullInd.innerHTML = '↓ 下拉刷新'; }
+  if(dy > PULL_SHOW && content.scrollTop <= 0){
+    pullInd.classList.add('show'); pullInd.innerHTML = '↓ 下拉刷新';
+  } else if(dy < PULL_HIDE || content.scrollTop > 0){
+    pullInd.classList.remove('show'); pullInd.innerHTML = '<span class="spin"></span>松开刷新';
+  }
 },{passive:true});
-content.addEventListener('touchend', function(){
-  if(pulling){ pulling=false; if(pullInd.classList.contains('show')) doRefresh(); }
-});
+function pullEnd(){
+  if(!pulling) return;
+  pulling = false;
+  if(pullInd.classList.contains('show')) doRefresh();
+  else pullIndReset();
+}
+content.addEventListener('touchend', pullEnd);
+/* 系统手势抢占(通知栏/返回手势等)触发 touchcancel 时 touchend 可能不触发,
+ * 必须一并复位, 否则指示器会一直残留显示 */
+content.addEventListener('touchcancel', pullIndReset);
+/* 进页面兜底: 确保指示器初始隐藏(即使上一会话异常残留) */
+pullIndReset();
 
 /* ---------- 聊天 ---------- */
 var chatList = $('chatList'), chatInp = $('chatInp'), btnSend = $('btnSend');
 $('greetTime').textContent = nowHMS();
-$('chatHost').textContent = HOST ? HOST.replace(/^https?:\/\//,'') : '--';
+var chatHostEl = $('chatHost'); if(chatHostEl) chatHostEl.textContent = HOST ? HOST.replace(/^https?:\/\//,'') : '--';
 function appendMsg(type, html){
   var d = document.createElement('div'); d.className = 'msg ' + type;
   d.innerHTML = type === 'me'
@@ -703,7 +732,25 @@ function appendMsg(type, html){
     : '<div class="avatar">◈</div><div class="body">'+html+'<div class="meta"><span>御衡</span><span>'+nowHMS()+'</span></div></div>';
   chatList.appendChild(d); chatList.scrollTop = chatList.scrollHeight;
 }
+/* 系统通知(定时任务完成/服务状态推送/指令确认类)不进聊天, 聊天只保留用户与agent对话 */
+function isSystemMsg(r){
+  if(!r) return false;
+  var t = String(r.type || r.kind || r.category || r.msg_type || '').toLowerCase();
+  return t === 'system' || t === 'sys' || t === 'notice' || t === 'notification';
+}
+/* 发送后的"思考中..."占位气泡, 真实回复到达后被替换 */
+var thinkingEl = null;
+function showThinking(){
+  if(thinkingEl) thinkingEl.remove();
+  var d = document.createElement('div'); d.className = 'msg agent';
+  d.innerHTML = '<div class="avatar">◈</div><div class="body"><div class="bubble thinking-bubble show">💭 思考中<i></i><i></i><i></i></div></div>';
+  chatList.appendChild(d); chatList.scrollTop = chatList.scrollHeight;
+  thinkingEl = d;
+}
+function hideThinking(){ if(thinkingEl){ thinkingEl.remove(); thinkingEl = null; } }
 function appendReply(r){
+  if(isSystemMsg(r)) return;   // 系统通知过滤
+  hideThinking();              // 真实回复到达, 替换"思考中..."
   // 回复文件结构: {time, text, type} 或 {message, response}
   var body = esc(r.text || r.message || '');
   if(r.response) body += '<div class="tool-card"><div class="t"><i></i>执行结果</div><div class="d">'+esc(r.response)+'</div></div>';
@@ -721,8 +768,9 @@ function pollReplies(){
     .then(function(d){
       var list = d.replies || [];
       list.forEach(function(rp){
-        var f = rp._file || '';
-        if(f && !seenReplies[f]){ seenReplies[f] = 1; appendReply(rp); addUnread(1); }
+        if(isSystemMsg(rp)) return;   // 系统通知不计未读也不显示
+        var key = rp._file || String(rp.time||'') + '|' + String(rp.text||rp.message||'');
+        if(key && !seenReplies[key]){ seenReplies[key] = 1; appendReply(rp); addUnread(1); }
       });
       scheduleReplies();
     })
@@ -743,16 +791,18 @@ function send(){
   .then(function(r){ return r.json(); })
   .then(function(d){
     if(d && d.ok){
-      appendMsg('agent', '<div class="bubble">指令已发送 <b style="color:var(--primary)">✔</b>，电脑端 Hermes 将按队列执行。</div>');
+      showThinking();   // 💭 思考中... 等待 Hermes 真实回复
       setConn('online');
       // 立即拉一次回复, 争取快速回显
       setTimeout(function(){ pollReplies(); }, 1500);
     } else {
+      hideThinking();
       appendMsg('agent', '<div class="bubble" style="color:var(--error)">发送失败: ' + esc((d&&d.error)||'未知错误') + '</div>');
       setConn('online');
     }
   })
   .catch(function(){
+    hideThinking();
     appendMsg('agent', '<div class="bubble" style="color:var(--error)">发送失败: 无法连接服务器</div>');
     setConn('offline'); scheduleReconnect();
   });
@@ -766,17 +816,26 @@ document.querySelectorAll('.cmd-chip').forEach(function(c){
 
 /* ---------- 未读徽章 / 提醒点 ---------- */
 var unreadChat = 0;
-function addUnread(n){ unreadChat += n; var b = $('notifChat'); if(unreadChat>0){ b.textContent = unreadChat>99?'99+':unreadChat; b.style.display='flex'; } }
-function clearUnread(){ unreadChat = 0; $('notifChat').style.display = 'none'; }
+function chatTabActive(){ var v = document.querySelector('.view-tab[data-tab="chat"]'); return !!(v && v.classList.contains('is-active')); }
+function addUnread(n){
+  if(chatTabActive()) return;   // 正在聊天页, 新消息不计未读
+  unreadChat += n;
+  var b = $('notifChat'); if(!b) return;
+  if(unreadChat > 0){ b.textContent = unreadChat>99?'99+':unreadChat; b.style.display = 'flex'; }
+}
+function clearUnread(){
+  unreadChat = 0;
+  var b = $('notifChat'); if(b) b.style.display = 'none';
+}
 function setProjectNotif(on){ $('notifProj').style.display = on?'block':'none'; }
 
 /* ---------- 头像系统 ---------- */
 var AV = {
-  hex:'<svg viewBox="0 0 40 40"><path d="M20 3 L33 11 V26 L20 34 L7 26 V11 Z" fill="rgba(212,175,55,.12)" stroke="#D4AF37" stroke-width="2"/><ellipse cx="20" cy="19" rx="11" ry="4.5" fill="none" stroke="#4DD0E1" stroke-width=".8" opacity=".8" transform="rotate(-24 20 19)"/><path d="M16 25 V12 H18.5 L21.5 19 L24.5 12 H27 V25" fill="none" stroke="#FFB74D" stroke-width="2"/></svg>',
-  star:'<svg viewBox="0 0 40 40"><path d="M20 4 L24 15 L35 15 L26 22 L29 34 L20 27 L11 34 L14 22 L5 15 L16 15 Z" fill="rgba(77,208,225,.15)" stroke="#4DD0E1" stroke-width="1.6"/><circle cx="20" cy="19" r="3.5" fill="none" stroke="#D4AF37" stroke-width="1.4"/></svg>',
-  h:'<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="#9D8FE8" stroke-width="1.6"/><path d="M14 28 V12 M14 20 H26 M26 28 V12" fill="none" stroke="#D4AF37" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  hex:'<svg viewBox="0 0 40 40"><path d="M20 3 L33 11 V26 L20 34 L7 26 V11 Z" fill="rgba(94,106,210,.12)" stroke="#5E6AD2" stroke-width="2"/><ellipse cx="20" cy="19" rx="11" ry="4.5" fill="none" stroke="#4DD0E1" stroke-width=".8" opacity=".8" transform="rotate(-24 20 19)"/><path d="M16 25 V12 H18.5 L21.5 19 L24.5 12 H27 V25" fill="none" stroke="#6E7BD9" stroke-width="2"/></svg>',
+  star:'<svg viewBox="0 0 40 40"><path d="M20 4 L24 15 L35 15 L26 22 L29 34 L20 27 L11 34 L14 22 L5 15 L16 15 Z" fill="rgba(77,208,225,.15)" stroke="#4DD0E1" stroke-width="1.6"/><circle cx="20" cy="19" r="3.5" fill="none" stroke="#5E6AD2" stroke-width="1.4"/></svg>',
+  h:'<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="#9D8FE8" stroke-width="1.6"/><path d="M14 28 V12 M14 20 H26 M26 28 V12" fill="none" stroke="#5E6AD2" stroke-width="2.4" stroke-linecap="round"/></svg>',
   user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="#4DD0E1" stroke-width="1.6"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="none" stroke="#4DD0E1" stroke-width="1.6"/></svg>',
-  bot:'<svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="12" rx="3" fill="none" stroke="#FFB74D" stroke-width="1.6"/><circle cx="9.5" cy="12" r="1" fill="#FFB74D"/><circle cx="14.5" cy="12" r="1" fill="#FFB74D"/><path d="M12 7 V4 M9 4 H15" stroke="#FFB74D" stroke-width="1.6" fill="none"/></svg>',
+  bot:'<svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="12" rx="3" fill="none" stroke="#6E7BD9" stroke-width="1.6"/><circle cx="9.5" cy="12" r="1" fill="#6E7BD9"/><circle cx="14.5" cy="12" r="1" fill="#6E7BD9"/><path d="M12 7 V4 M9 4 H15" stroke="#6E7BD9" stroke-width="1.6" fill="none"/></svg>',
   cat:'<svg viewBox="0 0 24 24"><path d="M4 9 L7 6 M20 9 L17 6 M12 7 L12 4" stroke="#FFA726" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="12" cy="14" rx="8" ry="6" fill="none" stroke="#FFA726" stroke-width="1.6"/><circle cx="9" cy="13" r=".9" fill="#FFA726"/><circle cx="15" cy="13" r=".9" fill="#FFA726"/><path d="M10 17 Q12 18.5 14 17" stroke="#FFA726" stroke-width="1.2" fill="none"/></svg>'
 };
 var curAvatar = { agent:'hex', me:'user' };
