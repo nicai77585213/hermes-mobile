@@ -459,7 +459,11 @@ public class MainActivity extends BridgeActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                injectHermesMobileTweaks(view);
+                // 御衡界面(assets的https://localhost)不注入Hermes手机版脚本,
+                // 避免生成灰色H菜单按钮(hermes-mobile-menu-button)叠加在御衡界面上
+                if (url == null || !url.startsWith("https://localhost")) {
+                    injectHermesMobileTweaks(view);
+                }
                 pushSafeAreaInsetsToPage(view);
             }
         });
