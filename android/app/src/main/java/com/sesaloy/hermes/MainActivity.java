@@ -28,6 +28,7 @@ import android.content.Context;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -97,6 +98,17 @@ public class MainActivity extends BridgeActivity {
         installHermesWebViewClient();
         installBackNavigationHandler();
         warmEmbeddedHermesRuntime();
+        checkWebUpdateAsync();
+    }
+
+    /** 启动时异步检查Web资源热更新, 有新版则下载并在完成后刷新页面 */
+    private void checkWebUpdateAsync() {
+        UpdateManager.checkAndApplyAsync(this, (result, newVersion, message) -> {
+            if ("updated".equals(result) && bridge != null && bridge.getWebView() != null) {
+                runOnUiThread(() -> bridge.getWebView().reload());
+            }
+            Log.i(TAG, "hot update: " + result + " -> " + newVersion + " | " + message);
+        });
     }
 
     private void startHermesForegroundService() {
@@ -405,6 +417,30 @@ public class MainActivity extends BridgeActivity {
         }
 
         bridge.setWebViewClient(new BridgeWebViewClient(bridge) {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                // 热更新: 优先从 filesDir/hermes-www/<version>/ 提供页面资源
+                File activeWeb = UpdateManager.getActiveWebDir(MainActivity.this);
+                if (activeWeb != null && request != null && request.getUrl() != null) {
+                    Uri u = request.getUrl();
+                    if ("https".equalsIgnoreCase(u.getScheme()) && "localhost".equalsIgnoreCase(u.getHost())) {
+                        String path = u.getPath() == null ? "/index.html" : u.getPath();
+                        if (path.endsWith("/")) path = path + "index.html";
+                        if (path.equals("/")) path = "/index.html";
+                        File f = new File(activeWeb, path);
+                        if (f.exists() && f.isFile()) {
+                            try {
+                                String mime = guessMime(path);
+                                return new WebResourceResponse(mime, "utf-8", new FileInputStream(f));
+                            } catch (Exception e) {
+                                Log.w(TAG, "hot update serve fail: " + path, e);
+                            }
+                        }
+                    }
+                }
+                return super.shouldInterceptRequest(view, request);
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri url = request.getUrl();
@@ -763,6 +799,58 @@ public class MainActivity extends BridgeActivity {
     }
 
     private class HermesAndroidBridge {
+        @JavascriptInterface
+        public boolean enterPictureInPictureMode() {
+            // 最小窗口(画中画), Android 8.0+
+            if (Build.VERSION.SDK_INT >= 26) {
+                return MainActivity.this.enterPictureInPictureMode();
+            }
+            return false;
+        }
+
+        @JavascriptInterface
+        public void minimizeApp() {
+            // 最小化到桌面
+            Intent home = new Intent(Intent.ACTION_MAIN);
+            home.addCategory(Intent.CATEGORY_HOME);
+            startActivity(home);
+        }
+
+        @JavascriptInterface
+        public String checkUpdate() {
+            // 手动检查Web资源热更新, 返回JSON {result, version, message}
+            final StringBuilder sb = new StringBuilder();
+            UpdateManager.checkAndApplyAsync(MainActivity.this, (result, newVersion, message) -> {
+                try {
+                    JSONObject j = new JSONObject();
+                    j.put("result", result);
+                    j.put("version", newVersion == null ? "" : newVersion);
+                    j.put("message", message == null ? "" : message);
+                    sb.append(j.toString());
+                } catch (Exception ignored) {
+                }
+            });
+            try {
+                for (int i = 0; i < 60 && sb.length() == 0; i++) Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+            }
+            return sb.length() == 0 ? "{\"result\":\"pending\",\"message\":\"检查中\"}" : sb.toString();
+        }
+
+        @JavascriptInterface
+        public String getVersionInfo() {
+            try {
+                JSONObject j = new JSONObject();
+                j.put("bundled", UpdateManager.BUNDLED_WWW_VERSION);
+                String active = UpdateManager.getActiveVersion(MainActivity.this);
+                j.put("active", active == null ? UpdateManager.BUNDLED_WWW_VERSION : active);
+                j.put("updateServer", UpdateManager.UPDATE_SERVER);
+                return j.toString();
+            } catch (Exception e) {
+                return "{}";
+            }
+        }
+
         @JavascriptInterface
         public String getAndroidAdbStatus() {
             return androidAdbManager.status().toString();
@@ -1857,6 +1945,29 @@ public class MainActivity extends BridgeActivity {
             }
         }
         return new File(dir, base + "-" + System.currentTimeMillis() + ext);
+    }
+
+    /** 热更新静态资源MIME推断 */
+    private static String guessMime(String path) {
+        String p = path.toLowerCase(java.util.Locale.ROOT);
+        if (p.endsWith(".html") || p.endsWith(".htm")) return "text/html";
+        if (p.endsWith(".js")) return "application/javascript";
+        if (p.endsWith(".css")) return "text/css";
+        if (p.endsWith(".json")) return "application/json";
+        if (p.endsWith(".png")) return "image/png";
+        if (p.endsWith(".jpg") || p.endsWith(".jpeg")) return "image/jpeg";
+        if (p.endsWith(".gif")) return "image/gif";
+        if (p.endsWith(".svg")) return "image/svg+xml";
+        if (p.endsWith(".webp")) return "image/webp";
+        if (p.endsWith(".woff2")) return "font/woff2";
+        if (p.endsWith(".woff")) return "font/woff";
+        if (p.endsWith(".ttf")) return "font/ttf";
+        if (p.endsWith(".ico")) return "image/x-icon";
+        if (p.endsWith(".txt")) return "text/plain";
+        if (p.endsWith(".mp3")) return "audio/mpeg";
+        if (p.endsWith(".mp4")) return "video/mp4";
+        if (p.endsWith(".wasm")) return "application/wasm";
+        return "application/octet-stream";
     }
 
 }
