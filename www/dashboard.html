@@ -373,6 +373,8 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
       </div>
       <div class="empty" id="projEmpty">未找到匹配项目</div>
     </div>
+    <!-- 项目详情实况弹层 -->
+    <div class="pd-overlay" id="projDetailOverlay" onclick="if(event.target===this)hideProjectDetail()"></div>
 
     <!-- Tab5 设置 -->
     <div class="view-tab" data-tab="settings" role="tabpanel" aria-label="设置">
@@ -912,16 +914,60 @@ function applyProjectFilter(){
   var list = [];
   try{ list = projListEl.dataset.all ? JSON.parse(projListEl.dataset.all) : []; }catch(e){}
   var hit = 0;
-  projListEl.innerHTML = list.slice(0,50).map(function(p){
+  projListEl.innerHTML = list.slice(0,50).map(function(p,idx){
     var show = !q || String(p.name||'').toLowerCase().indexOf(q) >= 0;
     if(show) hit++;
     var date = String(p.created||'').slice(5) || '--';
-    return '<div class="proj-item" style="display:'+(show?'':'none')+'">'
-      + '<span class="proj-name">'+esc(p.name)+'</span>'
-      + '<span class="proj-meta"><span class="'+chipOf(p.status)+'">'+esc(p.status)+'</span>'
-      + '<span class="proj-date">'+esc(date)+'</span></span></div>';
+    var pg = clamp(parseInt(p.progress,10)||0, 0, 100);
+    return '<div class="proj-item proj-click" data-i="'+idx+'" style="display:'+(show?'':'none')+'">'
+      + '<div class="proj-top"><span class="proj-name">'+esc(p.name)+'</span>'
+      + '<span class="'+chipOf(p.status)+'">'+esc(p.status)+'</span></div>'
+      + '<div class="proj-bar"><i style="width:'+pg+'%"></i></div>'
+      + '<div class="proj-meta"><span class="proj-pct">'+pg+'%</span><span class="proj-date">'+esc(date)+'</span></div>'
+      + '</div>';
   }).join('') || '<div class="empty show">加载中…</div>';
   projEmpty.classList.toggle('show', list.length > 0 && hit === 0);
+  // 点击项目 → 详情实况
+  projListEl.querySelectorAll('.proj-click').forEach(function(el){
+    el.addEventListener('click', function(){
+      try{
+        var all = JSON.parse(projListEl.dataset.all || '[]');
+        showProjectDetail(all[parseInt(el.getAttribute('data-i'),10)]);
+      }catch(e){}
+    });
+  });
+}
+
+/* ---------- 项目详情实况弹层 ---------- */
+function showProjectDetail(p){
+  if(!p) return;
+  var ov = $('projDetailOverlay');
+  if(!ov) return;
+  var rows = [
+    ['状态', p.status],
+    ['进度', (clamp(parseInt(p.progress,10)||0,0,100))+'%'],
+    ['描述', p.description],
+    ['技术栈', p.tech],
+    ['验证结果', p.verification],
+    ['最新进展', p.latest],
+    ['团队', Array.isArray(p.team) ? p.team.join(' / ') : (p.team || '')],
+    ['创建', p.created],
+    ['路径', p.path],
+  ].filter(function(r){ return r[1]; });
+  ov.innerHTML = '<div class="pd-card">'
+    + '<div class="pd-head"><span class="pd-title">'+esc(p.name)+'</span>'
+    + '<span class="pd-close" onclick="hideProjectDetail()">✕</span></div>'
+    + '<div class="pd-body">' + rows.map(function(r){
+        return '<div class="pd-row"><div class="pd-key">'+esc(r[0])+'</div>'
+          + '<div class="pd-val">'+esc(String(r[1]))+'</div></div>';
+      }).join('') + '</div>'
+    + '<div class="pd-foot"><button onclick="hideProjectDetail()">关闭</button></div>'
+    + '</div>';
+  ov.classList.add('show');
+}
+function hideProjectDetail(){
+  var ov = $('projDetailOverlay');
+  if(ov) ov.classList.remove('show');
 }
 if(projSearch) projSearch.addEventListener('input', applyProjectFilter);
 
