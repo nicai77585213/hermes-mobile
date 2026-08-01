@@ -830,6 +830,8 @@ public class MainActivity extends BridgeActivity {
         @JavascriptInterface
         public String checkUpdate() {
             // 手动检查Web资源热更新, 返回JSON {result, version, message}
+            // 等待完整流程(最长45秒), 更新成功自动刷新页面立即生效
+            final Object lock = new Object();
             final StringBuilder sb = new StringBuilder();
             UpdateManager.checkAndApplyAsync(MainActivity.this, (result, newVersion, message) -> {
                 try {
@@ -840,12 +842,21 @@ public class MainActivity extends BridgeActivity {
                     sb.append(j.toString());
                 } catch (Exception ignored) {
                 }
+                // 更新成功 → 刷新页面, 新资源立即生效
+                if ("updated".equals(result)) {
+                    runOnUiThread(() -> bridge.getWebView().reload());
+                }
+                synchronized (lock) {
+                    lock.notifyAll();
+                }
             });
-            try {
-                for (int i = 0; i < 60 && sb.length() == 0; i++) Thread.sleep(100);
-            } catch (InterruptedException ignored) {
+            synchronized (lock) {
+                try {
+                    lock.wait(45000);
+                } catch (InterruptedException ignored) {
+                }
             }
-            return sb.length() == 0 ? "{\"result\":\"pending\",\"message\":\"检查中\"}" : sb.toString();
+            return sb.length() == 0 ? "{\"result\":\"timeout\",\"message\":\"检查超时,请重试\"}" : sb.toString();
         }
 
         @JavascriptInterface
