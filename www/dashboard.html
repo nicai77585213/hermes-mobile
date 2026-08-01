@@ -247,6 +247,32 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 
 /* 无障碍: 减少动态 */
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== 项目进度条 + 详情弹层 ===== */
+.proj-click{cursor:pointer;transition:background .15s}
+.proj-click:active{background:var(--surface-mid)}
+.proj-top{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%}
+.proj-bar{width:100%;height:5px;border-radius:99px;background:var(--surface-high);overflow:hidden;margin:7px 0 5px}
+.proj-bar i{display:block;height:100%;border-radius:99px;background:var(--primary);transition:width .5s ease}
+.proj-pct{font-family:ui-monospace,monospace;font-size:11px;color:var(--primary)}
+.pd-overlay{position:fixed;inset:0;background:rgba(4,6,10,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2147483600;display:none;align-items:flex-end;justify-content:center}
+.pd-overlay.show{display:flex;animation:fadeIn .18s ease}
+.pd-card{width:100%;max-width:560px;height:100dvh;height:100vh;overflow:auto;background:var(--surface-low);padding:18px 16px 24px;animation:slideUp .22s ease}
+.pd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.pd-back{font-size:14px;color:var(--text-secondary);cursor:pointer;flex:0 0 auto;padding:4px 8px;border-radius:8px;background:var(--surface-high)}
+.pd-title{font-size:17px;font-weight:800;color:var(--text-primary);word-break:break-all;flex:1;text-align:center}
+.pd-close{width:30px;height:30px;border-radius:50%;background:var(--surface-high);color:var(--text-secondary);display:grid;place-items:center;font-size:13px;cursor:pointer;flex:0 0 30px}
+.pd-prog{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pd-prog-bar{flex:1;height:7px;border-radius:99px;background:var(--surface-high);overflow:hidden}
+.pd-prog-bar i{display:block;height:100%;border-radius:99px;background:var(--primary);transition:width .5s ease}
+.pd-pct{font-family:ui-monospace,monospace;font-size:12px;color:var(--primary)}
+.pd-body{display:grid;gap:9px}
+.pd-row{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:9px 11px;background:var(--surface-mid);border-radius:10px}
+.pd-key{font-size:12px;color:var(--text-dim);padding-top:1px}
+.pd-val{font-size:13px;color:var(--text-secondary);line-height:1.5;word-break:break-all}
+.pd-foot{margin-top:14px;text-align:center}
+.pd-foot button{min-height:42px;padding:0 40px;border-radius:12px;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:14px}
+@keyframes slideUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 </style>
 </head>
 <body>
