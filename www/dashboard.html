@@ -72,7 +72,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .logo .nm b{font-family:var(--font-label);font-size:clamp(16px,4.6vw,19px);font-weight:700;letter-spacing:6px;text-indent:6px;color:var(--primary-dim);text-shadow:0 0 16px rgba(94,106,210,.45);white-space:nowrap}
 .logo .nm span{font-family:var(--font-label);font-size:clamp(8px,2.2vw,9px);letter-spacing:3px;color:var(--text-dim);white-space:nowrap}
 /* 顶栏 */
-.topbar{height:52px;flex:0 0 52px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 var(--space-4);background:var(--bg-base);min-width:0}
+.topbar{background:color-mix(in srgb,var(--bg-base) 55%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);height:52px;flex:0 0 52px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 var(--space-4);background:var(--bg-base);min-width:0}
 .badge{display:flex;align-items:center;gap:5px;font-size:10px;padding:4px clamp(8px,2.5vw,10px);border-radius:var(--r-full);background:var(--surface-low);border:1px solid var(--outline-variant);color:var(--text-secondary);font-family:var(--font-mono);white-space:nowrap;transition:all .25s}
 .badge .dot{width:7px;height:7px;border-radius:50%;flex:0 0 7px}
 .badge.online .dot{background:var(--success);box-shadow:0 0 8px var(--success);animation:pulse 2.4s infinite}
@@ -99,7 +99,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .host-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--text-secondary);background:var(--surface-mid);border:1px solid var(--outline-variant);padding:3px 8px;border-radius:4px;letter-spacing:.5px;white-space:nowrap;max-width:60%;overflow:hidden;text-overflow:ellipsis}
 .host-tag i{width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 6px var(--primary);flex:0 0 6px}
 /* 卡片 */
-.card{position:relative;background:var(--surface-low);border:1px solid var(--outline);border-radius:var(--r-md);padding:var(--space-4);box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);min-width:0}
+.card{position:relative;background:color-mix(in srgb,var(--surface-low) 72%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in srgb,var(--outline) 60%,transparent);border-radius:var(--r-md);padding:var(--space-4);box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.06),inset 0 1px 0 rgba(255,255,255,.06);min-width:0}
 .card::before{content:'';position:absolute;top:0;left:0;width:26px;height:2px;background:var(--primary-dim);opacity:.7}
 .card::after{content:'';position:absolute;bottom:0;right:0;width:26px;height:2px;background:var(--primary-dim);opacity:.7}
 .card h3{font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:var(--space-3);display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -206,7 +206,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .cmd-chip{font-size:11px;padding:10px 14px;border-radius:var(--r-full);background:var(--surface-mid);border:1px solid var(--outline-variant);color:var(--text-secondary);font-weight:500;white-space:nowrap;position:relative;transition:transform .15s}
 .cmd-chip:active{transform:scale(.97);background:var(--surface-high);color:var(--primary);border-color:var(--primary-deep)}
 /* 底部导航 */
-.bottomnav{flex:0 0 var(--nav-h);background:transparent;display:flex;justify-content:space-around;align-items:center;padding-bottom:env(safe-area-inset-bottom);min-width:0;position:relative}
+.bottomnav{flex:0 0 var(--nav-h);background:color-mix(in srgb,var(--bg-base) 55%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border-top:1px solid color-mix(in srgb,var(--outline) 55%,transparent);display:flex;justify-content:space-around;align-items:center;padding-bottom:env(safe-area-inset-bottom);min-width:0;position:relative;z-index:500}
 .bottomnav::before{content:'';position:absolute;top:0;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(94,106,210,.18),transparent)}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text-dim);flex:1;min-width:0;padding:6px 0;border-radius:14px;font-weight:600;letter-spacing:.5px;transition:all .2s;white-space:nowrap;position:relative;cursor:pointer;background:none;border:none}
 .nav-item:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
@@ -258,7 +258,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .proj-pct{font-family:var(--font-num);font-size:11px;color:var(--primary)}
 .pd-overlay{position:fixed;inset:0;background:rgba(4,6,10,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2147483600;display:none;align-items:flex-end;justify-content:center}
 .pd-overlay.show{display:flex;animation:fadeIn .18s ease}
-.pd-card{width:100%;max-width:560px;height:100dvh;height:100vh;overflow:auto;background:var(--surface-low);padding:18px 16px 24px;animation:slideUp .22s ease}
+.pd-card{width:100%;max-width:560px;height:100dvh;height:100vh;overflow:auto;background:color-mix(in srgb,var(--surface-low) 82%,transparent);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);padding:18px 16px 24px;animation:slideUp .22s ease}
 .pd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
 .pd-back{font-size:14px;color:var(--text-secondary);cursor:pointer;flex:0 0 auto;padding:4px 8px;border-radius:8px;background:var(--surface-high)}
 .pd-title{font-size:17px;font-weight:800;color:var(--text-primary);word-break:break-all;flex:1;text-align:center}
@@ -454,12 +454,14 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
           <button class="av-item sel" data-k="hex"><span id="avA0"></span>徽章</button>
           <button class="av-item" data-k="star"><span id="avA1"></span>星舰</button>
           <button class="av-item" data-k="h"><span id="avA2"></span>赫耳墨斯</button>
+          <button class="av-item" data-k="agentCartoon"><span id="avA3"></span>卡通·助手</button>
         </div>
         <div style="font-size:11px;color:var(--text-dim);margin:10px 0 8px">我</div>
         <div class="avatar-pick" id="pickMe">
           <button class="av-item sel" data-k="user"><span id="avM0"></span>默认</button>
           <button class="av-item" data-k="bot"><span id="avM1"></span>机甲</button>
           <button class="av-item" data-k="cat"><span id="avM2"></span>猫</button>
+          <button class="av-item" data-k="meCartoon"><span id="avM3"></span>卡通·我</button>
         </div>
       </div>
     </div>
@@ -911,7 +913,9 @@ var AV = {
   h:'<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="#9D8FE8" stroke-width="1.6"/><path d="M14 28 V12 M14 20 H26 M26 28 V12" fill="none" stroke="#5E6AD2" stroke-width="2.4" stroke-linecap="round"/></svg>',
   user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="#4DD0E1" stroke-width="1.6"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="none" stroke="#4DD0E1" stroke-width="1.6"/></svg>',
   bot:'<svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="12" rx="3" fill="none" stroke="#6E7BD9" stroke-width="1.6"/><circle cx="9.5" cy="12" r="1" fill="#6E7BD9"/><circle cx="14.5" cy="12" r="1" fill="#6E7BD9"/><path d="M12 7 V4 M9 4 H15" stroke="#6E7BD9" stroke-width="1.6" fill="none"/></svg>',
-  cat:'<svg viewBox="0 0 24 24"><path d="M4 9 L7 6 M20 9 L17 6 M12 7 L12 4" stroke="#FFA726" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="12" cy="14" rx="8" ry="6" fill="none" stroke="#FFA726" stroke-width="1.6"/><circle cx="9" cy="13" r=".9" fill="#FFA726"/><circle cx="15" cy="13" r=".9" fill="#FFA726"/><path d="M10 17 Q12 18.5 14 17" stroke="#FFA726" stroke-width="1.2" fill="none"/></svg>'
+  cat:'<svg viewBox="0 0 24 24"><path d="M4 9 L7 6 M20 9 L17 6 M12 7 L12 4" stroke="#FFA726" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="12" cy="14" rx="8" ry="6" fill="none" stroke="#FFA726" stroke-width="1.6"/><circle cx="9" cy="13" r=".9" fill="#FFA726"/><circle cx="15" cy="13" r=".9" fill="#FFA726"/><path d="M10 17 Q12 18.5 14 17" stroke="#FFA726" stroke-width="1.2" fill="none"/></svg>',
+  agentCartoon:'<svg viewBox="0 0 24 24"><defs><radialGradient id="agF" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFC9A8"/><stop offset="1" stop-color="#FF9E6B"/></radialGradient></defs><circle cx="12" cy="11" r="6.5" fill="url(#agF)"/><circle cx="9.6" cy="10" r="1.1" fill="#2B2B2B"/><circle cx="14.4" cy="10" r="1.1" fill="#2B2B2B"/><circle cx="9.9" cy="9.7" r=".4" fill="#fff"/><circle cx="14.7" cy="9.7" r=".4" fill="#fff"/><path d="M9 13.5 Q12 15.5 15 13.5" stroke="#2B2B2B" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M6.5 13 Q4 16 5 19" stroke="#8B5A3B" stroke-width="1.6" fill="none"/><path d="M17.5 13 Q20 16 19 19" stroke="#8B5A3B" stroke-width="1.6" fill="none"/></svg>',
+  meCartoon:'<svg viewBox="0 0 24 24"><defs><radialGradient id="meF" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9E2"/><stop offset="1" stop-color="#FF9EB4"/></radialGradient></defs><circle cx="12" cy="11" r="6.5" fill="url(#meF)"/><path d="M8.5 12 q4 2.6 7 0" fill="#7A4A5E" opacity=".9"/><circle cx="12" cy="9.8" r="1.4" fill="#2B2B2B"/><circle cx="12.4" cy="9.4" r=".5" fill="#fff"/><path d="M5.5 13 Q3 17 4.5 21" stroke="#6B3A28" stroke-width="1.5" fill="none"/><path d="M18.5 13 Q21 17 19.5 21" stroke="#6B3A28" stroke-width="1.5" fill="none"/></svg>'
 };
 var curAvatar = { agent:'hex', me:'user' };
 try{
@@ -925,9 +929,9 @@ function applyAvatars(){
   document.querySelectorAll('.msg.me .avatar').forEach(function(a){ a.innerHTML = AV[curAvatar.me]; });
 }
 function renderPicks(){
-  var map = {hex:'avA0',star:'avA1',h:'avA2'};
+  var map = {hex:'avA0',star:'avA1',h:'avA2',agentCartoon:'avA3'};
   for(var k in map){ document.getElementById(map[k]).innerHTML = AV[k]; }
-  var m = {user:'avM0',bot:'avM1',cat:'avM2'};
+  var m = {user:'avM0',bot:'avM1',cat:'avM2',meCartoon:'avM3'};
   for(var k2 in m){ document.getElementById(m[k2]).innerHTML = AV[k2]; }
   document.querySelectorAll('#pickAgent .av-item').forEach(function(b){
     b.classList.toggle('sel', b.getAttribute('data-k') === curAvatar.agent);
