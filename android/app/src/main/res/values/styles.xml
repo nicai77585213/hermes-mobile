@@ -21,5 +21,8 @@
         <!-- 平滑启动: 窗口背景深色, 与splash/WebView无缝衔接 -->
         <item name="android:windowBackground">#0A0E13</item>
         <item name="android:windowSplashScreenBackground">#0A0E13</item>
+        <!-- 去掉splash图标: 启动直接深色→连接设置, 无衡·枢H一闪 -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_icon_transparent</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
     </style>
 </resources>
