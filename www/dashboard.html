@@ -75,7 +75,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .topbar{height:52px;flex:0 0 52px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 var(--space-4);background:var(--bg-base);min-width:0}
 .badge{display:flex;align-items:center;gap:5px;font-size:10px;padding:4px clamp(8px,2.5vw,10px);border-radius:var(--r-full);background:var(--surface-low);border:1px solid var(--outline-variant);color:var(--text-secondary);font-family:var(--font-mono);white-space:nowrap;transition:all .25s}
 .badge .dot{width:7px;height:7px;border-radius:50%;flex:0 0 7px}
-.badge.online .dot{background:var(--success);box-shadow:0 0 8px var(--success);animation:pulse 2s infinite}
+.badge.online .dot{background:var(--success);box-shadow:0 0 8px var(--success);animation:pulse 2.4s infinite}
 .badge.thinking .dot{background:var(--warning);box-shadow:0 0 8px var(--warning)}
 .badge.offline{background:var(--surface-low);border-color:rgba(239,83,80,.35);color:var(--error)}
 .badge.offline .dot{background:var(--error);box-shadow:0 0 8px var(--error)}
@@ -99,7 +99,7 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .host-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--text-secondary);background:var(--surface-mid);border:1px solid var(--outline-variant);padding:3px 8px;border-radius:4px;letter-spacing:.5px;white-space:nowrap;max-width:60%;overflow:hidden;text-overflow:ellipsis}
 .host-tag i{width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 6px var(--primary);flex:0 0 6px}
 /* 卡片 */
-.card{position:relative;background:var(--surface-low);border:1px solid var(--outline);border-radius:var(--r-md);padding:var(--space-4);box-shadow:0 4px 12px rgba(0,0,0,.35);min-width:0}
+.card{position:relative;background:var(--surface-low);border:1px solid var(--outline);border-radius:var(--r-md);padding:var(--space-4);box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);min-width:0}
 .card::before{content:'';position:absolute;top:0;left:0;width:26px;height:2px;background:var(--primary-dim);opacity:.7}
 .card::after{content:'';position:absolute;bottom:0;right:0;width:26px;height:2px;background:var(--primary-dim);opacity:.7}
 .card h3{font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:var(--space-3);display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -288,6 +288,17 @@ body{background:#1a1f2a;font-family:var(--font-label);font-size:var(--font-size-
 .proj-click:active{transform:scale(.985)}
 .stat-legend span{transition:opacity .2s}
 .stat-legend span:hover{opacity:.75}
+
+/* ===== 设计学习落地 (Dribbble+Motion) ===== */
+/* 卡片错峰入场 */
+.gauge-row .gauge{animation:fadeUp .5s cubic-bezier(.2,.8,.2,1) both}
+.gauge-row .gauge:nth-child(1){animation-delay:.05s}.gauge-row .gauge:nth-child(2){animation-delay:.14s}.gauge-row .gauge:nth-child(3){animation-delay:.23s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* 数据卡辉光hover(呼应Dribbble同色辉光) */
+.card:hover{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 18px color-mix(in srgb,var(--primary) 10%,transparent)}
+/* 状态点语义色强化 */
+.dot{transition:box-shadow .3s}
+#svcList .item{transition:background .2s,padding .2s}
 </style>
 </head>
 <body>
