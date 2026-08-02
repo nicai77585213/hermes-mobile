@@ -18,5 +18,8 @@
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
+        <!-- 平滑启动: 窗口背景深色, 与splash/WebView无缝衔接 -->
+        <item name="android:windowBackground">#0A0E13</item>
+        <item name="android:windowSplashScreenBackground">#0A0E13</item>
     </style>
 </resources>

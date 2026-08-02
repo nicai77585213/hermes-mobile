@@ -359,6 +359,8 @@ public class MainActivity extends BridgeActivity {
         }
 
         WebView webView = bridge.getWebView();
+        // 平滑启动: WebView背景设深色, 避免splash消失→首帧之间的白屏闪烁
+        webView.setBackgroundColor(0xFF0A0E13);
         // 每次启动清缓存, 防止覆盖安装后显示旧版界面(Hermes手机版残留)
         webView.clearCache(true);
         WebSettings settings = webView.getSettings();
